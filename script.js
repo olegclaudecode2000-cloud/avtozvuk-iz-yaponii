@@ -45,7 +45,9 @@ function gallery(p) {
       <button class="gallery__btn gallery__btn--prev" aria-label="Предыдущее фото">‹</button>
       <button class="gallery__btn gallery__btn--next" aria-label="Следующее фото">›</button>
       <span class="gallery__count">1 / ${list.length}</span>
-    </div>`;
+    </div>
+    <div class="thumbs">${list.map((src, i) =>
+      `<button class="thumbs__item${i ? "" : " is-active"}" data-i="${i}" aria-label="Фото ${i + 1}"><img src="${escapeHtml(src)}" alt="" loading="lazy"></button>`).join("")}</div>`;
 }
 
 function initGallery(root) {
@@ -53,16 +55,38 @@ function initGallery(root) {
   if (!g) return;
   const track = g.querySelector(".gallery__track");
   const count = g.querySelector(".gallery__count");
+  const thumbs = [...root.querySelectorAll(".thumbs__item")];
   const total = track.children.length;
-  const current = () => Math.round(track.scrollLeft / track.clientWidth);
-  const go = i => track.scrollTo({ left: Math.max(0, Math.min(total - 1, i)) * track.clientWidth, behavior: "smooth" });
-  g.querySelector(".gallery__btn--prev").addEventListener("click", () => go(current() - 1));
-  g.querySelector(".gallery__btn--next").addEventListener("click", () => go(current() + 1));
-  track.addEventListener("scroll", () => { count.textContent = `${current() + 1} / ${total}`; }, { passive: true });
+  // Номер фото храним сами: так быстрые нажатия на стрелки не теряются,
+  // пока предыдущее фото ещё доезжает
+  let index = 0;
+  let autoScroll = 0;
+  const show = i => {
+    index = i;
+    count.textContent = `${i + 1} / ${total}`;
+    thumbs.forEach((t, n) => t.classList.toggle("is-active", n === i));
+    thumbs[i]?.scrollIntoView({ block: "nearest", inline: "nearest" });
+  };
+  const go = i => {
+    i = (i + total) % total; // после последнего — снова первое
+    show(i);
+    clearTimeout(autoScroll);
+    autoScroll = setTimeout(() => { autoScroll = 0; }, 700);
+    track.scrollTo({ left: i * track.clientWidth, behavior: "smooth" });
+  };
+  g.querySelector(".gallery__btn--prev").addEventListener("click", () => go(index - 1));
+  g.querySelector(".gallery__btn--next").addEventListener("click", () => go(index + 1));
+  thumbs.forEach(t => t.addEventListener("click", () => go(Number(t.dataset.i))));
+  // Листание пальцем: номер берём из положения ленты
+  track.addEventListener("scroll", () => {
+    if (autoScroll) return;
+    const i = Math.round(track.scrollLeft / track.clientWidth);
+    if (i !== index) show(i);
+  }, { passive: true });
   g.tabIndex = 0;
   g.addEventListener("keydown", e => {
-    if (e.key === "ArrowLeft") go(current() - 1);
-    if (e.key === "ArrowRight") go(current() + 1);
+    if (e.key === "ArrowLeft") go(index - 1);
+    if (e.key === "ArrowRight") go(index + 1);
   });
 }
 
@@ -112,7 +136,7 @@ function filtered() {
 function card(p) {
   return `
   <article class="card${p.image ? "" : " card--plain"}" data-id="${p.id}" tabindex="0">
-    <div class="card__img">${picture(p)}</div>
+    <div class="card__img">${picture(p)}${p.images && p.images.length > 1 ? `<span class="card__photos">${p.images.length} фото</span>` : ""}</div>
     <div class="card__body">
       <span class="card__cat">${escapeHtml(p.category)}${p.car ? " · " + escapeHtml(p.car) : ""}</span>
       <h3 class="card__name">${escapeHtml(p.name)}</h3>
