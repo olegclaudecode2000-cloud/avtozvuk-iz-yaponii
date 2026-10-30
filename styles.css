@@ -1,11 +1,11 @@
 /* Тёмный «звуковой» стиль: графит + янтарный, как подсветка магнитолы */
 :root {
-  --bg: #0e1013;
-  --surface: #161a1f;
-  --surface-2: #1e232a;
-  --border: #2a3038;
+  --bg: #1b1f27;
+  --surface: #252b35;
+  --surface-2: #2f3642;
+  --border: #414a58;
   --text: #eef0f3;
-  --muted: #9aa2ad;
+  --muted: #b6bec9;
   --accent: #ffb020;
   --accent-hover: #ffc24d;
   --accent-ink: #1a1200;
@@ -91,7 +91,7 @@ h1, h2 { font-family: var(--display); font-weight: 400; }
 /* Первый экран */
 .hero {
   background:
-    linear-gradient(90deg, rgba(14,16,19,.96) 0%, rgba(14,16,19,.85) 45%, rgba(14,16,19,.35) 100%),
+    linear-gradient(90deg, rgba(27,31,39,.92) 0%, rgba(27,31,39,.6) 45%, rgba(27,31,39,.05) 100%),
     url("images/hero.jpg") center / cover no-repeat;
   border-bottom: 1px solid var(--border);
 }
@@ -334,6 +334,42 @@ img[src*="images/oem/"] { object-fit: contain !important; background: #fff; padd
 .specs td:first-child { color: var(--muted); width: 38%; padding-right: 12px; }
 .modal__price { font-family: var(--display); font-size: 1.6rem; color: var(--accent); margin-bottom: 14px; }
 
+/* Яркость: неоновое янтарное свечение, как подсветка магнитолы ночью */
+body {
+  background:
+    radial-gradient(1000px 600px at 90% -5%, rgba(255, 176, 32, .22), transparent 60%),
+    radial-gradient(800px 700px at -5% 40%, rgba(255, 110, 40, .16), transparent 60%),
+    radial-gradient(900px 700px at 105% 75%, rgba(255, 176, 32, .14), transparent 60%),
+    radial-gradient(700px 500px at 10% 100%, rgba(255, 90, 60, .12), transparent 60%),
+    var(--bg);
+  background-attachment: fixed;
+}
+.header { border-bottom: 1px solid rgba(255, 176, 32, .55); box-shadow: 0 1px 18px rgba(255, 176, 32, .25); background: rgba(27, 31, 39, .9); }
+.hero { box-shadow: inset 0 -2px 0 rgba(255, 176, 32, .7), 0 2px 30px rgba(255, 176, 32, .25); }
+.hero h1 { text-shadow: 0 0 40px rgba(255, 176, 32, .25); }
+.hero__eyebrow { text-shadow: 0 0 12px rgba(255, 176, 32, .7); }
+.section-head h2::after {
+  content: ""; display: block; width: 72px; height: 4px; margin-top: 10px; border-radius: 2px;
+  background: linear-gradient(90deg, var(--accent), #ff7a29);
+  box-shadow: 0 0 18px rgba(255, 176, 32, .9);
+}
+.card, .direction, .service, .review { border-color: rgba(255, 176, 32, .22); }
+.card:hover, .direction:hover { box-shadow: 0 12px 34px rgba(255, 176, 32, .3), 0 0 0 1px rgba(255, 176, 32, .8); }
+.direction:hover { border-color: var(--accent); }
+.direction__title { text-shadow: 0 0 16px rgba(255, 176, 32, .5); }
+.card__price { text-shadow: 0 0 18px rgba(255, 176, 32, .6); }
+.facts b { text-shadow: 0 0 22px rgba(255, 176, 32, .8); }
+.btn--accent { box-shadow: 0 6px 26px rgba(255, 176, 32, .55); }
+.btn--accent:hover { box-shadow: 0 8px 34px rgba(255, 176, 32, .75); }
+.btn--max { box-shadow: 0 6px 24px rgba(99, 102, 241, .5); }
+.tab.is-active { box-shadow: 0 4px 20px rgba(255, 176, 32, .55); }
+.chip.is-active { box-shadow: 0 0 14px rgba(255, 176, 32, .45); }
+.service { border-top: 3px solid var(--accent); box-shadow: 0 -6px 20px -10px rgba(255, 176, 32, .8); }
+.reviews__score b { text-shadow: 0 0 22px rgba(70, 201, 122, .7); }
+.contacts { background: linear-gradient(180deg, rgba(255, 176, 32, .07), transparent 60%), var(--surface); border-color: rgba(255, 176, 32, .4); }
+.call-fab { box-shadow: 0 6px 26px rgba(255, 176, 32, .7); }
+.logo__eq i { box-shadow: 0 0 8px rgba(255, 176, 32, .8); }
+
 /* На сенсорных экранах — кнопки фильтров под палец */
 @media (pointer: coarse) {
   .chip, .tab { min-height: 44px; }
@@ -357,7 +393,7 @@ img[src*="images/oem/"] { object-fit: contain !important; background: #fff; padd
   .direction { aspect-ratio: 16 / 7; }
   .call-fab { display: grid; }
   .hero { background:
-    linear-gradient(180deg, rgba(14,16,19,.75) 0%, rgba(14,16,19,.95) 70%),
+    linear-gradient(180deg, rgba(27,31,39,.5) 0%, rgba(27,31,39,.9) 70%),
     url("images/hero.jpg") center / cover no-repeat; }
 }
 @media (max-width: 520px) {
