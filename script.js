@@ -123,11 +123,11 @@ const countEl = document.getElementById("catalogCount");
 const moreBtn = document.getElementById("moreBtn");
 const searchInput = document.getElementById("searchInput");
 
-function filtered() {
+function filtered(withFilters = true) {
   const words = state.query.toLowerCase().split(/\s+/).filter(Boolean);
   return ITEMS.filter(p => {
-    if (state.category && p.category !== state.category) return false;
-    if (state.car && p.car !== state.car) return false;
+    if (withFilters && state.category && p.category !== state.category) return false;
+    if (withFilters && state.car && p.car !== state.car) return false;
     const text = [p.name, p.category, p.car].join(" ").toLowerCase();
     return words.every(w => text.includes(w));
   });
@@ -170,15 +170,27 @@ function render() {
       `<button class="chip${state.car === c ? " is-active" : ""}" data-car="${escapeHtml(c)}">${c ? escapeHtml(c) : "Любой"}</button>`).join("");
 
   const list = filtered();
-  countEl.textContent = list.length
+  // Если ничего не нашлось из-за выбранного раздела или марки — подсказать и дать сбросить
+  const active = [state.category, state.car].filter(Boolean);
+  const without = active.length && !list.length ? filtered(false).length : 0;
+  countEl.innerHTML = list.length
     ? `Найдено: ${list.length}`
-    : "Ничего не нашлось — позвоните, скорее всего подберём.";
+    : without
+      ? `С фильтром «${escapeHtml(active.join(", "))}» ничего нет, но без фильтра нашлось: ${without}. <button class="btn btn--accent reset" data-reset>Показать все ${without}</button>`
+      : "Ничего не нашлось — позвоните, скорее всего подберём.";
   grid.innerHTML = list.slice(0, state.shown).map(card).join("") + moreCard;
   const left = list.length - state.shown;
   moreBtn.hidden = left <= 0;
   moreBtn.textContent = `Показать ещё (${left})`;
 }
 
+countEl.addEventListener("click", e => {
+  if (!e.target.closest("[data-reset]")) return;
+  state.category = "";
+  state.car = "";
+  state.shown = PAGE;
+  render();
+});
 catTabs.addEventListener("click", e => {
   const b = e.target.closest("[data-cat]");
   if (!b) return;
