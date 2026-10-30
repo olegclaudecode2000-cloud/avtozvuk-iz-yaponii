@@ -16,10 +16,15 @@ if (MAX_LINK) {
 }
 
 // Все товары: сначала подробные карточки с фото, потом остальное с Фарпоста
+// oem — официальное фото производителя: оно становится главным,
+// а фото из объявления (реальное состояние товара) идут следом при листании
+const withOem = p => p.oem
+  ? { ...p, image: p.oem, images: [p.oem, ...(p.images || (p.image ? [p.image] : []))] }
+  : p;
 const ITEMS = [
   ...PRODUCTS,
   ...CATALOG.map((p, i) => ({ ...p, id: 1000 + i })),
-];
+].map(withOem);
 document.querySelectorAll("[data-count]").forEach(el => el.textContent = ITEMS.length);
 
 // Рисунки вместо фото, пока своих фото нет
