@@ -34,6 +34,38 @@ const picture = p => p.image
   ? `<img src="${escapeHtml(p.image)}" alt="${escapeHtml(p.name)}" loading="lazy">`
   : `<span class="card__icon">${ICONS[p.category] || ICONS["Японские магнитолы"]}</span>`;
 
+// Галерея в окне товара: листается пальцем на телефоне и стрелками на компьютере
+function gallery(p) {
+  const list = p.images && p.images.length ? p.images : p.image ? [p.image] : [];
+  if (list.length < 2) return `<div class="modal__img${p.image ? "" : " modal__img--plain"}">${picture(p)}</div>`;
+  return `
+    <div class="gallery">
+      <div class="gallery__track">${list.map((src, i) =>
+        `<img src="${escapeHtml(src)}" alt="${escapeHtml(p.name)}, фото ${i + 1}" loading="${i ? "lazy" : "eager"}">`).join("")}</div>
+      <button class="gallery__btn gallery__btn--prev" aria-label="Предыдущее фото">‹</button>
+      <button class="gallery__btn gallery__btn--next" aria-label="Следующее фото">›</button>
+      <span class="gallery__count">1 / ${list.length}</span>
+    </div>`;
+}
+
+function initGallery(root) {
+  const g = root.querySelector(".gallery");
+  if (!g) return;
+  const track = g.querySelector(".gallery__track");
+  const count = g.querySelector(".gallery__count");
+  const total = track.children.length;
+  const current = () => Math.round(track.scrollLeft / track.clientWidth);
+  const go = i => track.scrollTo({ left: Math.max(0, Math.min(total - 1, i)) * track.clientWidth, behavior: "smooth" });
+  g.querySelector(".gallery__btn--prev").addEventListener("click", () => go(current() - 1));
+  g.querySelector(".gallery__btn--next").addEventListener("click", () => go(current() + 1));
+  track.addEventListener("scroll", () => { count.textContent = `${current() + 1} / ${total}`; }, { passive: true });
+  g.tabIndex = 0;
+  g.addEventListener("keydown", e => {
+    if (e.key === "ArrowLeft") go(current() - 1);
+    if (e.key === "ArrowRight") go(current() + 1);
+  });
+}
+
 // Плитки направлений — открывают нужный раздел каталога
 const catalogEl = document.getElementById("catalog");
 const directions = document.getElementById("directions");
@@ -164,7 +196,7 @@ function openProduct(id) {
     ["Доставка", "По всей России. До ТК в Находке — " + (p.freeDelivery ? "бесплатно" : "300 ₽")],
   ].filter(Boolean);
   modalBody.innerHTML = `
-    <div class="modal__img${p.image ? "" : " modal__img--plain"}">${picture(p)}</div>
+    ${gallery(p)}
     <div class="modal__body">
       <span class="card__cat">${escapeHtml(p.category)}</span>
       <h2>${escapeHtml(p.name)}</h2>
@@ -176,6 +208,7 @@ function openProduct(id) {
       ${p.farpost ? `<a class="btn btn--ghost btn--wide modal__farpost" href="${escapeHtml(p.farpost)}" target="_blank" rel="noopener">Фото и подробности на Фарпосте</a>` : ""}
     </div>`;
   modal.showModal();
+  initGallery(modalBody);
 }
 
 grid.addEventListener("click", e => {
