@@ -1,7 +1,7 @@
 // Товары папы. Данные взяты из объявлений на Фарпосте.
 // price: число в рублях или null — тогда «Цена по запросу»
 // priceFrom: true — показать «от ...»
-// image: пока временные фото с Unsplash, заменить на свои
+// image: фото из объявлений на Фарпосте (папка images/fp)
 // farpost: ссылка на объявление (там фото и подробности)
 
 const PHONE_LINK = "tel:+79147133074";
@@ -14,7 +14,7 @@ const PRODUCTS = [
     id: 1,
     category: "Android-магнитолы",
     name: "Автомагнитола Toyota на Android 4/128",
-    image: "images/toyota.jpg", car: "Toyota",
+    image: "images/fp/52115064.jpg", car: "Toyota",
     farpost: "https://www.farpost.ru/nakhodka/auto/audio/radio/avtomagnitola-toyota-android-4-128-novaja-garantija-52115064.html",
     price: 8000, priceFrom: true,
     condition: "Новая", warranty: true,
@@ -32,7 +32,7 @@ const PRODUCTS = [
     id: 2,
     category: "Android-магнитолы",
     name: "Автомагнитола Car Heaven T100 4/128 для Honda Vezel 2026",
-    image: "images/honda.jpg", car: "Honda",
+    image: "images/fp/138070510.jpg", car: "Honda",
     farpost: "https://www.farpost.ru/nakhodka/auto/audio/radio/avtomagnitola-t100-android-na-4-128-honda-vezel-26-goda-138070510.html",
     price: 13000, priceFrom: false,
     condition: "Новая", warranty: true,
@@ -49,9 +49,9 @@ const PRODUCTS = [
 
 // Направления — плитки над каталогом. filter — какой раздел каталога открыть.
 const DIRECTIONS = [
-  { title: "Android-магнитолы", text: "Новые, с гарантией, от 8 000 ₽", image: "images/honda.jpg", filter: "Android-магнитолы" },
-  { title: "Японские магнитолы", text: "Pioneer, Kenwood, Alpine, Toyota, Clarion и другие", image: "images/japan.jpg", filter: "Японские магнитолы" },
-  { title: "Рамки, крепления, провода", text: "Под Toyota, Honda, Nissan, Mazda, Subaru", image: "images/install.jpg", filter: "Рамки и крепления" },
+  { title: "Android-магнитолы", text: "Новые, с гарантией, от 8 000 ₽", image: "images/fp/138070510.jpg", filter: "Android-магнитолы" },
+  { title: "Японские магнитолы", text: "Pioneer, Kenwood, Alpine, Toyota, Clarion и другие", image: "images/fp/126672838.jpg", filter: "Японские магнитолы" },
+  { title: "Рамки, крепления, провода", text: "Под Toyota, Honda, Nissan, Mazda, Subaru", image: "images/fp/125287284.jpg", filter: "Рамки и крепления" },
 ];
 
 // Разделы каталога в нужном порядке
