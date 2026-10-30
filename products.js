@@ -2,6 +2,7 @@
 // price: число в рублях или null — тогда «Цена по запросу»
 // priceFrom: true — показать «от ...»
 // image: пока временные фото с Unsplash, заменить на свои
+// farpost: ссылка на объявление (там фото и подробности)
 
 const PHONE_LINK = "tel:+79147133074";
 const PHONE_TEXT = "8 914 713-30-74";
@@ -13,7 +14,8 @@ const PRODUCTS = [
     id: 1,
     category: "Android-магнитолы",
     name: "Автомагнитола Toyota на Android 4/128",
-    image: "images/toyota.jpg",
+    image: "images/toyota.jpg", car: "Toyota",
+    farpost: "https://www.farpost.ru/nakhodka/auto/audio/radio/avtomagnitola-toyota-android-4-128-novaja-garantija-52115064.html",
     price: 8000, priceFrom: true,
     condition: "Новая", warranty: true,
     specs: [
@@ -30,7 +32,8 @@ const PRODUCTS = [
     id: 2,
     category: "Android-магнитолы",
     name: "Автомагнитола Car Heaven T100 4/128 для Honda Vezel 2026",
-    image: "images/honda.jpg",
+    image: "images/honda.jpg", car: "Honda",
+    farpost: "https://www.farpost.ru/nakhodka/auto/audio/radio/avtomagnitola-t100-android-na-4-128-honda-vezel-26-goda-138070510.html",
     price: 13000, priceFrom: false,
     condition: "Новая", warranty: true,
     specs: [
@@ -44,9 +47,12 @@ const PRODUCTS = [
   },
 ];
 
-// Направления — то, что есть в павильоне. Точный ассортимент уточняется.
+// Направления — плитки над каталогом. filter — какой раздел каталога открыть.
 const DIRECTIONS = [
-  { title: "Android-магнитолы", text: "Под конкретную модель авто, с рамкой и проводкой", image: "images/honda.jpg" },
-  { title: "Японские магнитолы", text: "Panasonic, Sony, JVC, Addzest и другие", image: "images/japan.jpg" },
-  { title: "Колонки, сабвуферы, усилители", text: "Наличие уточняйте по телефону", image: "images/sub.jpg" },
+  { title: "Android-магнитолы", text: "Новые, с гарантией, 9 000 – 22 000 ₽", image: "images/honda.jpg", filter: "Android-магнитолы" },
+  { title: "Японские магнитолы", text: "Pioneer, Kenwood, Alpine, Toyota, Clarion и другие", image: "images/japan.jpg", filter: "Японские магнитолы" },
+  { title: "Рамки, крепления, провода", text: "Под Toyota, Honda, Nissan, Mazda, Subaru", image: "images/install.jpg", filter: "Рамки и крепления" },
 ];
+
+// Разделы каталога в нужном порядке
+const CATEGORIES = ["Android-магнитолы", "Японские магнитолы", "Рамки и крепления", "Провода и аксессуары"];

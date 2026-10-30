@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Автозвук из Японии — магнитолы и установка в Находке</title>
-  <meta name="description" content="Android-магнитолы под вашу машину, японские магнитолы, колонки и сабвуферы. Проверка и установка. Авторынок Северторг, Находка. 8 914 713-30-74.">
+  <meta name="description" content="Android-магнитолы под вашу машину, японские магнитолы Pioneer, Kenwood, Alpine, Toyota, рамки и провода. Установка и гарантия. Авторынок Северторг, Находка. 8 914 713-30-74.">
   <link rel="canonical" href="https://olegclaudecode2000-cloud.github.io/avtozvuk-iz-yaponii/">
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="icon" href="favicon-32.png" type="image/png" sizes="32x32">
@@ -29,7 +29,7 @@
     "@context": "https://schema.org",
     "@type": "ElectronicsStore",
     "name": "Автозвук из Японии",
-    "description": "Android-магнитолы, японские магнитолы, колонки и сабвуферы. Проверка и установка.",
+    "description": "Android-магнитолы, японские магнитолы, рамки, крепления и провода под японские машины. Установка и гарантия.",
     "url": "https://olegclaudecode2000-cloud.github.io/avtozvuk-iz-yaponii/",
     "image": "https://olegclaudecode2000-cloud.github.io/avtozvuk-iz-yaponii/og-image.jpg",
     "telephone": "+7 914 713-30-74",
@@ -62,7 +62,7 @@
         <span class="logo__text">Автозвук <b>из Японии</b></span>
       </a>
       <nav class="nav">
-        <a href="#catalog">Магнитолы</a>
+        <a href="#catalog">Каталог</a>
         <a href="#services">Услуги</a>
         <a href="#contacts">Как найти</a>
       </nav>
@@ -77,14 +77,15 @@
     <div class="container hero__inner">
       <p class="hero__eyebrow">Авторынок Северторг · Находка</p>
       <h1>Магнитолы под&nbsp;вашу машину. С&nbsp;установкой и&nbsp;гарантией.</h1>
-      <p class="hero__sub">Android-магнитолы, японская техника, колонки и сабвуферы. Проверим, подберём и установим. 19&nbsp;лет на&nbsp;Фарпосте.</p>
+      <p class="hero__sub">Android-магнитолы, японские магнитолы, рамки и&nbsp;провода под вашу машину. Проверим, подберём и&nbsp;установим. 19&nbsp;лет на&nbsp;Фарпосте.</p>
       <div class="hero__actions">
         <a class="btn btn--accent btn--big" data-phone href="#">Позвонить</a>
         <a class="btn btn--max btn--big" data-max href="#" target="_blank" rel="noopener" hidden>Написать в MAX</a>
-        <a class="btn btn--ghost btn--big" href="#catalog">Смотреть магнитолы</a>
+        <a class="btn btn--ghost btn--big" href="#catalog">Смотреть каталог</a>
       </div>
       <ul class="facts">
         <li><b>19 лет</b><span>на Фарпосте</span></li>
+        <li><b data-count>110</b><span>товаров в каталоге</span></li>
         <li><b>+3 000 ₽</b><span>установка</span></li>
         <li><b>Гарантия</b><span>и осмотр на месте</span></li>
       </ul>
@@ -97,10 +98,18 @@
 
   <main id="catalog" class="catalog container">
     <div class="section-head">
-      <h2>Магнитолы в наличии</h2>
+      <h2>Каталог</h2>
       <p>Модели меняются каждую неделю. Если нужной нет — позвоните, подберём под вашу машину.</p>
     </div>
+    <form class="search" id="searchForm" role="search">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg>
+      <input id="searchInput" type="search" placeholder="Поиск: Pioneer, Prius, рамка, USB…" autocomplete="off" aria-label="Поиск по каталогу">
+    </form>
+    <div class="tabs" id="catTabs"></div>
+    <div class="chips" id="carChips"></div>
+    <p class="catalog__count" id="catalogCount"></p>
     <div class="grid" id="productGrid"></div>
+    <button class="btn btn--ghost btn--big more" id="moreBtn" hidden></button>
   </main>
 
   <section id="services" class="services container">
@@ -126,6 +135,16 @@
     </div>
   </section>
 
+  <section class="reviews container" aria-label="Отзывы">
+    <div class="reviews__score">
+      <b>+30</b>
+      <span>рейтинг продавца на Фарпосте<br>100% положительных отзывов</span>
+    </div>
+    <blockquote class="review">«Уже второй раз покупаю у этого продавца. Спасибо»</blockquote>
+    <blockquote class="review">«Все отлично, рекомендую!»</blockquote>
+    <a class="reviews__link" href="https://www.farpost.ru/user/oklia/" target="_blank" rel="noopener">Все отзывы на Фарпосте →</a>
+  </section>
+
   <section id="contacts" class="contacts">
     <div class="container contacts__grid">
       <div class="contacts__photo">
@@ -138,7 +157,7 @@
           <div><dt>Телефон</dt><dd><a data-phone href="#"><span data-phone-text></span></a></dd></div>
           <div><dt>Часы работы</dt><dd>С 10:00 до 15:00</dd></div>
           <div><dt>Оплата</dt><dd>Наличными</dd></div>
-          <div><dt>Доставка</dt><dd>До транспортной компании в Находке — уточняйте</dd></div>
+          <div><dt>Доставка</dt><dd>До транспортной компании в Находке — 300 ₽, на часть товаров бесплатно</dd></div>
         </dl>
         <div class="contacts__actions">
           <a class="btn btn--max" data-max href="#" target="_blank" rel="noopener" hidden>Написать в MAX</a>
@@ -166,6 +185,7 @@
   </dialog>
 
   <script src="products.js"></script>
+  <script src="catalog.js"></script>
   <script src="script.js"></script>
 </body>
 </html>
