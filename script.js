@@ -97,7 +97,7 @@ function card(p) {
 const moreCard = `
   <a class="card card--more" data-phone href="${PHONE_LINK}">
     <span class="card--more__title">Не нашли свою модель?</span>
-    <span class="card--more__text">Здесь не всё, что есть в павильоне. Назовите марку, модель и год машины — подберём магнитолу, рамку и провода.</span>
+    <span class="card--more__text">Здесь не всё, что есть в павильоне. Назовите марку, модель и год машины — подберём магнитолу, рамку и провода. Отправим в любой город России.</span>
     <span class="card--more__actions">
       <span class="btn btn--accent">Позвонить</span>
       ${MAX_LINK ? '<span class="btn btn--max" data-max-link>Написать в MAX</span>' : ""}
@@ -161,7 +161,7 @@ function openProduct(id) {
     p.car && ["Для машины", p.car],
     p.condition && ["Состояние", p.condition],
     p.warranty && ["Гарантия", "Да, осмотр на месте"],
-    ["Доставка до ТК", p.freeDelivery ? "Бесплатно" : "300 ₽"],
+    ["Доставка", "По всей России. До ТК в Находке — " + (p.freeDelivery ? "бесплатно" : "300 ₽")],
   ].filter(Boolean);
   modalBody.innerHTML = `
     <div class="modal__img${p.image ? "" : " modal__img--plain"}">${picture(p)}</div>
