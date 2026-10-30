@@ -54,8 +54,8 @@ const PRODUCTS = [
 // Направления — плитки над каталогом. filter — какой раздел каталога открыть.
 const DIRECTIONS = [
   { title: "Android-магнитолы", text: "Новые, с гарантией, от 8 000 ₽", image: "images/honda.jpg", filter: "Android-магнитолы" },
-  { title: "Японские магнитолы", text: "Pioneer, Kenwood, Alpine, Toyota, Clarion и другие", image: "images/fp/65187812.jpg", filter: "Японские магнитолы" },
-  { title: "Рамки, крепления, провода", text: "Под Toyota, Honda, Nissan, Mazda, Subaru", image: "images/fp/138070510-5.jpg", filter: "Рамки и крепления" },
+  { title: "Японские магнитолы", text: "Pioneer, Kenwood, Alpine, Toyota, Clarion и другие", image: "images/tile-japan.jpg", filter: "Японские магнитолы" },
+  { title: "Рамки, крепления, провода", text: "Под Toyota, Honda, Nissan, Mazda, Subaru", image: "images/tile-frames.jpg", filter: "Рамки и крепления" },
 ];
 
 // Разделы каталога в нужном порядке
