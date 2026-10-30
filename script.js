@@ -134,7 +134,7 @@ function filtered(withFilters = true) {
   return ITEMS.filter(p => {
     if (withFilters && state.category && p.category !== state.category) return false;
     if (withFilters && state.car && p.car !== state.car) return false;
-    const text = [p.name, p.category, p.car].join(" ").toLowerCase();
+    const text = [p.name, p.category, p.car, p.description || ""].join(" ").toLowerCase();
     return words.every(w => text.includes(w));
   });
 }
