@@ -98,7 +98,10 @@ const moreCard = `
   <a class="card card--more" data-phone href="${PHONE_LINK}">
     <span class="card--more__title">Не нашли свою модель?</span>
     <span class="card--more__text">Здесь не всё, что есть в павильоне. Назовите марку, модель и год машины — подберём магнитолу, рамку и провода.</span>
-    <span class="btn btn--accent">Позвонить</span>
+    <span class="card--more__actions">
+      <span class="btn btn--accent">Позвонить</span>
+      ${MAX_LINK ? '<span class="btn btn--max" data-max-link>Написать в MAX</span>' : ""}
+    </span>
   </a>`;
 
 function render() {
@@ -176,6 +179,12 @@ function openProduct(id) {
 }
 
 grid.addEventListener("click", e => {
+  // Кнопка MAX внутри карточки «Не нашли?» открывает MAX, а не звонок
+  if (e.target.closest("[data-max-link]")) {
+    e.preventDefault();
+    window.open(MAX_LINK, "_blank", "noopener");
+    return;
+  }
   const c = e.target.closest(".card[data-id]");
   if (c) openProduct(Number(c.dataset.id));
 });

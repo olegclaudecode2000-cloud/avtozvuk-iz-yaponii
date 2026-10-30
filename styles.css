@@ -57,6 +57,8 @@ h1, h2 { font-family: var(--display); font-weight: 400; }
 .btn--big { padding: 15px 26px; font-size: 1.05rem; }
 .btn--max { background: #4f46e5; color: #fff; }
 .btn--max:hover { background: #6366f1; }
+.btn--2gis { background: #1ba136; color: #fff; }
+.btn--2gis:hover { background: #22b83f; }
 .modal__max { margin-top: 10px; }
 .btn--wide { width: 100%; }
 .btn:focus-visible, .card:focus-visible, .direction:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
@@ -82,6 +84,7 @@ h1, h2 { font-family: var(--display); font-weight: 400; }
 @keyframes eq { 50% { transform: scaleY(.45); } }
 .logo__eq i { transform-origin: bottom; }
 .nav { display: flex; gap: 22px; margin-left: auto; }
+.header__max { padding: 10px 14px; }
 .nav a { text-decoration: none; color: var(--muted); font-weight: 600; }
 .nav a:hover { color: var(--text); }
 
@@ -212,7 +215,7 @@ h1, h2 { font-family: var(--display); font-weight: 400; }
 }
 .card--more__title { font-family: var(--display); font-size: 1.3rem; }
 .card--more__text { color: var(--muted); }
-.card--more .btn { align-self: flex-start; }
+.card--more__actions { display: flex; flex-wrap: wrap; gap: 8px; }
 
 /* Услуги */
 .services { padding-block: 40px; scroll-margin-top: 64px; }
@@ -313,7 +316,11 @@ h1, h2 { font-family: var(--display); font-weight: 400; }
 @media (max-width: 860px) {
   .nav { display: none; }
   .header__call span { display: none; }
-  .header__call { margin-left: auto; padding: 10px 12px; }
+  .header__call { padding: 10px 12px; }
+  .header__max { margin-left: auto; padding: 10px 12px; }
+  .header__max span { display: none; }
+  .header__max:not([hidden]) + .header__call { margin-left: 0; }
+  .header__max[hidden] + .header__call { margin-left: auto; }
   .directions__grid, .services__grid, .contacts__grid, .reviews { grid-template-columns: 1fr; }
   .directions__grid { gap: 12px; }
   .direction { aspect-ratio: 16 / 7; }
@@ -328,6 +335,8 @@ h1, h2 { font-family: var(--display); font-weight: 400; }
   .facts { gap: 12px 24px; }
   .facts b { font-size: 1.2rem; }
   .info div { grid-template-columns: 1fr; gap: 2px; }
+  .logo { font-size: .95rem; white-space: nowrap; }
+  .header__row { gap: 10px; }
   .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
   .card__body { padding: 10px 12px 12px; }
   .card__name { font-size: .9rem; }

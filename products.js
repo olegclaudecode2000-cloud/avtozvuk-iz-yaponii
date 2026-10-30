@@ -6,8 +6,8 @@
 
 const PHONE_LINK = "tel:+79147133074";
 const PHONE_TEXT = "8 914 713-30-74";
-// Ссылка на профиль в MAX. Пока пусто — кнопка «Написать в MAX» скрыта.
-const MAX_LINK = "";
+// Ссылка на профиль папы в MAX. Если оставить пустой — кнопки «Написать в MAX» скроются.
+const MAX_LINK = "https://max.ru/u/f9LHodD0cOLUMGpsCuepJZE-tlHACLYGTLT-9EVgtx3WlIWfsYIhPEzz1VA";
 
 const PRODUCTS = [
   {
@@ -43,7 +43,7 @@ const PRODUCTS = [
       ["Комплект", "все фишки, CAN Bus, рамка"],
       ["Работает", "мультируль, штатная камера"],
     ],
-    description: "Полный комплект для Honda Vezel 2026 года. Возможна установка — +3 000 ₽.",
+    description: "Полный комплект для Honda Vezel 2026 года. Возможна установка — от 1 000 ₽.",
   },
 ];
 
