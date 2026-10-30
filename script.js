@@ -33,6 +33,7 @@ const ICONS = {
   "Android-магнитолы": svg('<rect x="2.5" y="5" width="19" height="13" rx="2"/><path d="M6 8.5h12v6H6z"/><path d="M9 21h6"/>'),
   "Японские магнитолы": svg('<rect x="2" y="7" width="20" height="10" rx="2"/><circle cx="7" cy="12" r="2.2"/><path d="M12 10h7M12 14h5"/>'),
   "Рамки и крепления": svg('<rect x="3" y="4" width="18" height="16" rx="2"/><rect x="7" y="8" width="10" height="8" rx="1"/><path d="M3 9h2M3 15h2M19 9h2M19 15h2"/>'),
+  "Сигнализации Pandora": svg('<path d="M12 2 4 5v6c0 5 3.4 9.4 8 11 4.6-1.6 8-6 8-11V5z"/><path d="m9 12 2 2 4-4"/>'),
   "Провода и аксессуары": svg('<path d="M9 2v5M15 2v5"/><path d="M7 7h10v3a5 5 0 0 1-10 0z"/><path d="M12 15v3a3 3 0 0 0 3 3h4"/>'),
 };
 const picture = p => p.image

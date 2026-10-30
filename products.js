@@ -55,8 +55,9 @@ const PRODUCTS = [
 const DIRECTIONS = [
   { title: "Android-магнитолы", text: "Новые, с гарантией, от 8 000 ₽", image: "images/honda.jpg", filter: "Android-магнитолы" },
   { title: "Японские магнитолы", text: "Pioneer, Kenwood, Alpine, Toyota, Clarion и другие", image: "images/tile-japan.jpg", filter: "Японские магнитолы" },
+  { title: "Сигнализации Pandora", text: "Автозапуск, управление с телефона, установка 7 000 ₽", image: "images/fp/64527981.jpg", filter: "Сигнализации Pandora" },
   { title: "Рамки, крепления, провода", text: "Под Toyota, Honda, Nissan, Mazda, Subaru", image: "images/tile-frames.jpg", filter: "Рамки и крепления" },
 ];
 
 // Разделы каталога в нужном порядке
-const CATEGORIES = ["Android-магнитолы", "Японские магнитолы", "Рамки и крепления", "Провода и аксессуары"];
+const CATEGORIES = ["Android-магнитолы", "Японские магнитолы", "Сигнализации Pandora", "Рамки и крепления", "Провода и аксессуары"];

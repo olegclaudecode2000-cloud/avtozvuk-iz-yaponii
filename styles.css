@@ -122,7 +122,8 @@ h1, h2 { font-family: var(--display); font-weight: 400; }
 
 /* Направления */
 .directions { padding-block: 40px 8px; }
-.directions__grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+.directions__grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
+@media (max-width: 1100px) { .directions__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 .direction {
   position: relative;
   display: block;
@@ -223,7 +224,7 @@ img[src*="images/oem/"] { object-fit: contain !important; background: #fff; padd
 
 /* Услуги */
 .services { padding-block: 40px; scroll-margin-top: 64px; }
-.services__grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+.services__grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 16px; }
 .service { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 22px; display: flex; flex-direction: column; }
 .service h3 { font-size: 1.1rem; }
 .service p { margin: 0; color: var(--muted); }
