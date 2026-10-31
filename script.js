@@ -302,3 +302,21 @@ modal.addEventListener("click", e => { if (e.target === modal) modal.close(); })
 render();
 openFromLink();
 window.addEventListener("hashchange", openFromLink);
+
+// Анимация: «эквалайзер» внизу первого экрана — столбики разной высоты и скорости, как на магнитоле
+const heroEq = document.getElementById("heroEq");
+if (heroEq) {
+  heroEq.innerHTML = Array.from({ length: 56 }, () => {
+    const h = 20 + Math.round(Math.random() * 80), d = (0.7 + Math.random() * 0.9).toFixed(2), delay = (-Math.random() * 2).toFixed(2);
+    return `<i style="height:${h}%;animation-duration:${d}s;animation-delay:${delay}s"></i>`;
+  }).join("");
+}
+
+// Анимация: блоки ниже первого экрана плавно появляются при прокрутке
+if ("IntersectionObserver" in window && !matchMedia("(prefers-reduced-motion: reduce)").matches) {
+  const io = new IntersectionObserver(entries => entries.forEach(e => {
+    if (e.isIntersecting) { e.target.classList.add("is-in"); io.unobserve(e.target); }
+  }), { rootMargin: "0px 0px -8% 0px" });
+  document.querySelectorAll(".section-head, .direction, .service, .reviews__score, .review, .reviews__link, .contacts__photo, .contacts__info")
+    .forEach((el, n) => { el.classList.add("reveal"); el.style.setProperty("--d", (n % 4) * 70 + "ms"); io.observe(el); });
+}
