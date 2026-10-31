@@ -119,12 +119,16 @@ directions.addEventListener("click", e => {
 
 // Каталог: раздел, марка машины, поиск
 const PAGE = 24;
-const state = { category: "", car: "", query: "", shown: PAGE };
+const state = { category: "", car: "", cond: "", query: "", shown: PAGE };
+// Состояние товара: новый или б/у (из объявления на Фарпосте)
+const condOf = p => /б\/у/i.test(p.condition || "") ? "used" : /^нов/i.test(p.condition || "") ? "new" : "";
+const CONDS = [["", "Любое"], ["new", "Новые"], ["used", "Б/у"]];
 const CARS = [...new Set(ITEMS.map(p => p.car).filter(Boolean))];
 
 const grid = document.getElementById("productGrid");
 const catTabs = document.getElementById("catTabs");
 const carChips = document.getElementById("carChips");
+const condChips = document.getElementById("condChips");
 const countEl = document.getElementById("catalogCount");
 const moreBtn = document.getElementById("moreBtn");
 const searchInput = document.getElementById("searchInput");
@@ -134,7 +138,8 @@ function filtered(withFilters = true) {
   return ITEMS.filter(p => {
     if (withFilters && state.category && p.category !== state.category) return false;
     if (withFilters && state.car && p.car !== state.car) return false;
-    const text = [p.name, p.category, p.car, p.description || ""].join(" ").toLowerCase();
+    if (withFilters && state.cond && condOf(p) !== state.cond) return false;
+    const text = [p.name, p.category, p.car, p.condition || "", p.description || ""].join(" ").toLowerCase();
     return words.every(w => text.includes(w));
   });
 }
@@ -147,7 +152,7 @@ function card(p) {
       <span class="card__cat">${escapeHtml(p.category)}${p.car ? " · " + escapeHtml(p.car) : ""}</span>
       <h3 class="card__name">${escapeHtml(p.name)}</h3>
       <div class="card__meta">
-        ${p.condition ? `<span class="badge">${escapeHtml(p.condition)}</span>` : ""}
+        ${p.condition ? `<span class="badge${condOf(p) === "new" ? " badge--ok" : ""}">${escapeHtml(p.condition)}</span>` : ""}
         ${p.warranty ? '<span class="badge badge--ok">Гарантия</span>' : ""}
         ${p.freeDelivery ? '<span class="badge badge--ok">Доставка до ТК бесплатно</span>' : ""}
       </div>
@@ -174,10 +179,12 @@ function render() {
   carChips.innerHTML = `<span class="chips__label">Для машины:</span>` +
     ["", ...CARS].map(c =>
       `<button class="chip${state.car === c ? " is-active" : ""}" data-car="${escapeHtml(c)}">${c ? escapeHtml(c) : "Любой"}</button>`).join("");
+  condChips.innerHTML = `<span class="chips__label">Состояние:</span>` +
+    CONDS.map(([v, t]) => `<button class="chip${state.cond === v ? " is-active" : ""}" data-cond="${v}">${t}</button>`).join("");
 
   const list = filtered();
   // Если ничего не нашлось из-за выбранного раздела или марки — подсказать и дать сбросить
-  const active = [state.category, state.car].filter(Boolean);
+  const active = [state.category, state.car, state.cond && CONDS.find(c => c[0] === state.cond)[1]].filter(Boolean);
   const without = active.length && !list.length ? filtered(false).length : 0;
   countEl.innerHTML = list.length
     ? `Найдено: ${list.length}`
@@ -194,6 +201,7 @@ countEl.addEventListener("click", e => {
   if (!e.target.closest("[data-reset]")) return;
   state.category = "";
   state.car = "";
+  state.cond = "";
   state.shown = PAGE;
   render();
 });
@@ -208,6 +216,13 @@ carChips.addEventListener("click", e => {
   const b = e.target.closest("[data-car]");
   if (!b) return;
   state.car = b.dataset.car;
+  state.shown = PAGE;
+  render();
+});
+condChips.addEventListener("click", e => {
+  const b = e.target.closest("[data-cond]");
+  if (!b) return;
+  state.cond = b.dataset.cond;
   state.shown = PAGE;
   render();
 });
