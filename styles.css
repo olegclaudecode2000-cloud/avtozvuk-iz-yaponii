@@ -439,15 +439,6 @@ body {
 .hero__inner > :nth-child(4) { animation-delay: .3s; }
 .hero__inner > :nth-child(5) { animation-delay: .4s; }
 
-/* Эквалайзер внизу первого экрана */
-.hero { position: relative; overflow: hidden; }
-.hero__inner { position: relative; z-index: 1; }
-.hero__eq { position: absolute; left: 0; right: 0; bottom: 0; height: 90px; display: flex; align-items: flex-end; gap: 4px;
-  padding: 0 4px; opacity: .22; pointer-events: none;
-  -webkit-mask: linear-gradient(90deg, transparent, #000 15%, #000 85%, transparent); mask: linear-gradient(90deg, transparent, #000 15%, #000 85%, transparent); }
-.hero__eq i { flex: 1; background: linear-gradient(180deg, var(--accent), rgba(255, 176, 32, .2)); border-radius: 2px 2px 0 0;
-  transform-origin: bottom; animation: eq ease-in-out infinite; box-shadow: 0 0 10px rgba(255, 176, 32, .6); }
-
 /* Карточки каталога появляются по очереди после фильтра и поиска */
 .grid > .card { animation: rise .45s cubic-bezier(.2, .7, .2, 1) both; }
 .grid > .card:nth-child(2) { animation-delay: .04s; } .grid > .card:nth-child(3) { animation-delay: .08s; }
@@ -458,8 +449,7 @@ body {
 .reveal { opacity: 0; transform: translateY(22px); transition: opacity .6s ease var(--d, 0ms), transform .6s cubic-bezier(.2, .7, .2, 1) var(--d, 0ms); }
 .reveal.is-in { opacity: 1; transform: none; }
 
-@media (max-width: 600px) { .hero__eq { height: 60px; gap: 3px; } }
 @media (prefers-reduced-motion: reduce) {
-  .hero__inner > *, .grid > .card, .hero__eq i { animation: none; }
+  .hero__inner > *, .grid > .card { animation: none; }
   .reveal { opacity: 1; transform: none; }
 }

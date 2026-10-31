@@ -303,15 +303,6 @@ render();
 openFromLink();
 window.addEventListener("hashchange", openFromLink);
 
-// Анимация: «эквалайзер» внизу первого экрана — столбики разной высоты и скорости, как на магнитоле
-const heroEq = document.getElementById("heroEq");
-if (heroEq) {
-  heroEq.innerHTML = Array.from({ length: 56 }, () => {
-    const h = 20 + Math.round(Math.random() * 80), d = (0.7 + Math.random() * 0.9).toFixed(2), delay = (-Math.random() * 2).toFixed(2);
-    return `<i style="height:${h}%;animation-duration:${d}s;animation-delay:${delay}s"></i>`;
-  }).join("");
-}
-
 // Анимация: блоки ниже первого экрана плавно появляются при прокрутке
 if ("IntersectionObserver" in window && !matchMedia("(prefers-reduced-motion: reduce)").matches) {
   const io = new IntersectionObserver(entries => entries.forEach(e => {
