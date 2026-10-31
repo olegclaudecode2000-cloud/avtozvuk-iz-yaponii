@@ -412,3 +412,16 @@ body {
   .card__icon svg { width: 40px; height: 40px; }
   .card--more { grid-column: 1 / -1; padding: 18px; }
 }
+
+/* Заметная ссылка на мамин сайт в подвале */
+.footer .footer__partner {
+  display: inline-flex; align-items: center; gap: 10px; padding: 10px 16px; min-height: 44px; margin-block: 0;
+  background: #e32b2b; color: #fff; border-radius: 10px; font-weight: 700; text-decoration: none;
+  box-shadow: 0 6px 18px rgba(227, 43, 43, .4); transition: transform .15s, box-shadow .15s;
+}
+.footer__partner-mark { display: grid; place-items: center; width: 26px; height: 26px; border-radius: 6px; background: #fff; color: #e32b2b; font-size: .75rem; font-weight: 900; flex: none; }
+.footer .footer__partner b { transition: transform .15s; }
+.footer .footer__partner:hover { color: #fff; transform: translateY(-2px); box-shadow: 0 10px 26px rgba(227, 43, 43, .55); }
+.footer .footer__partner:hover b { transform: translateX(3px); }
+.footer__row { align-items: center; }
+@media (max-width: 860px) { .footer { padding-bottom: 96px; } }
