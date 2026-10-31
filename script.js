@@ -222,8 +222,11 @@ document.getElementById("searchForm").addEventListener("submit", e => {
   document.getElementById("catalogCount").scrollIntoView({ behavior: "smooth", block: "start" });
 });
 moreBtn.addEventListener("click", () => {
+  const was = grid.children.length;
   state.shown += PAGE;
   render();
+  // Уже показанные карточки не анимируем заново — появляются только новые
+  [...grid.children].slice(0, was).forEach(c => { c.style.animation = "none"; });
 });
 
 // Окно товара
