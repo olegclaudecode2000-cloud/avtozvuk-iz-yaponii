@@ -216,7 +216,11 @@ searchInput.addEventListener("input", () => {
   state.shown = PAGE;
   render();
 });
-document.getElementById("searchForm").addEventListener("submit", e => e.preventDefault());
+document.getElementById("searchForm").addEventListener("submit", e => {
+  e.preventDefault();
+  searchInput.blur(); // спрятать клавиатуру телефона, чтобы она не закрывала результаты
+  document.getElementById("catalogCount").scrollIntoView({ behavior: "smooth", block: "start" });
+});
 moreBtn.addEventListener("click", () => {
   state.shown += PAGE;
   render();
