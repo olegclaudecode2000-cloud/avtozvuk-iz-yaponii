@@ -240,6 +240,7 @@ function openProduct(id) {
     p.condition && ["Состояние", p.condition],
     p.warranty && ["Гарантия", "Да, осмотр на месте"],
     ["Доставка", "По всей России. До ТК в Находке — " + (p.freeDelivery ? "бесплатно" : "300 ₽")],
+    ["Оплата", "Наличными или по договорённости"],
   ].filter(Boolean);
   modalBody.innerHTML = `
     ${gallery(p)}
