@@ -425,3 +425,7 @@ body {
 .footer .footer__partner:hover b { transform: translateX(3px); }
 .footer__row { align-items: center; }
 @media (max-width: 860px) { .footer { padding-bottom: 96px; } }
+
+/* Поделиться ссылкой на товар */
+.modal__share { margin-top: 10px; }
+.share__tip { margin: 8px 0 0; font-size: 14px; color: var(--muted, #9aa3b2); word-break: break-all; }

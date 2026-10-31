@@ -252,9 +252,33 @@ function openProduct(id) {
       <a class="btn btn--accent btn--big btn--wide" href="${PHONE_LINK}">Позвонить: ${PHONE_TEXT}</a>
       ${MAX_LINK ? `<a class="btn btn--max btn--big btn--wide modal__max" href="${escapeHtml(MAX_LINK)}" target="_blank" rel="noopener">Написать в MAX</a>` : ""}
       ${p.farpost ? `<a class="btn btn--ghost btn--wide modal__farpost" href="${escapeHtml(p.farpost)}" target="_blank" rel="noopener">Фото и подробности на Фарпосте</a>` : ""}
+      <button class="btn btn--ghost btn--wide modal__share" data-share>Поделиться ссылкой на товар</button>
+      <p class="share__tip" id="shareTip" hidden></p>
     </div>`;
-  modal.showModal();
+  history.replaceState(null, "", "#t=" + linkKey(p));
+  if (!modal.open) modal.showModal();
   initGallery(modalBody);
+}
+
+// Своя ссылка у каждого товара: номер объявления на Фарпосте (не меняется), иначе номер на сайте
+const linkKey = p => (p.farpost && (p.farpost.match(/-(\d+)\.html/) || [])[1]) || "p" + p.id;
+const shareTip = text => { const t = document.getElementById("shareTip"); t.textContent = text; t.hidden = false; };
+modalBody.addEventListener("click", async e => {
+  if (!e.target.closest("[data-share]")) return;
+  const url = location.href, title = modalBody.querySelector("h2").textContent;
+  if (navigator.share) {
+    try { await navigator.share({ title, url }); return; } catch (err) { if (err.name === "AbortError") return; }
+  }
+  try { await navigator.clipboard.writeText(url); shareTip("Ссылка скопирована — отправьте её в MAX или СМС."); }
+  catch { shareTip(url); }
+});
+// Окно закрыли — убираем товар из адреса страницы
+modal.addEventListener("close", () => history.replaceState(null, "", location.pathname + location.search));
+// Открыли сайт по ссылке на товар — сразу показываем его
+function openFromLink() {
+  const key = decodeURIComponent((location.hash.match(/^#t=(.+)/) || [])[1] || "");
+  const p = key && ITEMS.find(x => linkKey(x) === key);
+  if (p) openProduct(p.id);
 }
 
 grid.addEventListener("click", e => {
@@ -275,3 +299,5 @@ document.getElementById("modalClose").addEventListener("click", () => modal.clos
 modal.addEventListener("click", e => { if (e.target === modal) modal.close(); });
 
 render();
+openFromLink();
+window.addEventListener("hashchange", openFromLink);
