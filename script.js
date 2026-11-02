@@ -176,11 +176,20 @@ function render() {
     const n = ITEMS.filter(p => !c || p.category === c).length;
     return `<button class="tab${state.category === c ? " is-active" : ""}" data-cat="${escapeHtml(c)}">${c ? escapeHtml(c) : "Всё"} <small>${n}</small></button>`;
   }).join("");
+  // Марки и состояние — только те, что есть в выбранном разделе (у сигнализаций марок нет — строка прячется)
+  const inCat = ITEMS.filter(p => !state.category || p.category === state.category);
+  const cars = CARS.filter(c => inCat.some(p => p.car === c));
+  if (state.car && !cars.includes(state.car)) state.car = "";
+  carChips.hidden = !cars.length;
   carChips.innerHTML = `<span class="chips__label">Для машины:</span>` +
-    ["", ...CARS].map(c =>
+    ["", ...cars].map(c =>
       `<button class="chip${state.car === c ? " is-active" : ""}" data-car="${escapeHtml(c)}">${c ? escapeHtml(c) : "Любой"}</button>`).join("");
+  const inCar = inCat.filter(p => !state.car || p.car === state.car);
+  const conds = CONDS.filter(([v]) => v && inCar.some(p => condOf(p) === v));
+  if (state.cond && !conds.some(([v]) => v === state.cond)) state.cond = "";
+  condChips.hidden = conds.length < 2;
   condChips.innerHTML = `<span class="chips__label">Состояние:</span>` +
-    CONDS.map(([v, t]) => `<button class="chip${state.cond === v ? " is-active" : ""}" data-cond="${v}">${t}</button>`).join("");
+    [CONDS[0], ...conds].map(([v, t]) => `<button class="chip${state.cond === v ? " is-active" : ""}" data-cond="${v}">${t}</button>`).join("");
 
   const list = filtered();
   // Если ничего не нашлось из-за выбранного раздела или марки — подсказать и дать сбросить
