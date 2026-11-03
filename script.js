@@ -304,7 +304,8 @@ modalBody.addEventListener("click", async e => {
 modal.addEventListener("close", () => history.replaceState(null, "", location.pathname + location.search));
 // Открыли сайт по ссылке на товар — сразу показываем его
 function openFromLink() {
-  const key = decodeURIComponent((location.hash.match(/^#t=(.+)/) || [])[1] || "");
+  let key = "";
+  try { key = decodeURIComponent((location.hash.match(/^#t=(.+)/) || [])[1] || ""); } catch { key = ""; } // кривая ссылка — просто не открываем товар
   const p = key && ITEMS.find(x => linkKey(x) === key);
   if (p) openProduct(p.id);
 }
