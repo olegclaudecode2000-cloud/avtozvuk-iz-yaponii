@@ -349,20 +349,12 @@ const TEYES = [
     "price": 17200
    },
    {
-    "name": "CC4L · 4/64 ГБ · 4G",
-    "price": 21300
-   },
-   {
     "name": "CC2 Plus · 4/64 ГБ · 4G",
     "price": 21800
    },
    {
     "name": "CC3 · 4/32 ГБ · 4G",
     "price": 22600
-   },
-   {
-    "name": "CC4 · 6/64 ГБ · 4G",
-    "price": 29600
    }
   ]
  },
@@ -507,7 +499,7 @@ const TEYES = [
   "name": "TEYES 1DIN с поворотным экраном 10″",
   "image": "images/teyes/image24.jpg",
   "price": 26400,
-  "priceFrom": true,
+  "priceFrom": false,
   "condition": "Новая",
   "warranty": true,
   "order": "Под заказ · 2–3 дня",
@@ -517,10 +509,6 @@ const TEYES = [
    {
     "name": "CC3 · 4/32 ГБ",
     "price": 26400
-   },
-   {
-    "name": "CC4 PRO",
-    "price": 42100
    }
   ]
  },
@@ -706,8 +694,8 @@ const TEYES = [
   "category": "TEYES под заказ",
   "name": "Видеорегистратор TEYES для CC4",
   "image": "images/teyes/image25.jpg",
-  "price": 5500,
-  "priceFrom": true,
+  "price": 5800,
+  "priceFrom": false,
   "condition": "Новая",
   "warranty": true,
   "order": "Под заказ · 2–3 дня",
@@ -715,20 +703,8 @@ const TEYES = [
   "memo": "",
   "variants": [
    {
-    "name": "CC4 AHD DVR",
-    "price": 5500
-   },
-   {
     "name": "CC4 AHD (передний)",
     "price": 5800
-   },
-   {
-    "name": "CC4 PRO DVR",
-    "price": 6600
-   },
-   {
-    "name": "CC4 AHD DVR BOX",
-    "price": 6800
    }
   ]
  },
@@ -738,7 +714,7 @@ const TEYES = [
   "name": "Камеры TEYES для CC4",
   "image": "images/teyes/image19.jpg",
   "price": 6600,
-  "priceFrom": true,
+  "priceFrom": false,
   "condition": "Новая",
   "warranty": true,
   "order": "Под заказ · 2–3 дня",
@@ -752,45 +728,6 @@ const TEYES = [
    {
     "name": "Камера заднего вида",
     "price": 6600
-   },
-   {
-    "name": "Круговой обзор 360° (CC4)",
-    "price": 10100
-   },
-   {
-    "name": "Круговой обзор 360° (CC4 PRO)",
-    "price": 15500
-   },
-   {
-    "name": "Круговой обзор 360° с ADAS",
-    "price": 17800
-   }
-  ]
- },
- {
-  "key": "teyes-mic-cc4",
-  "category": "TEYES под заказ",
-  "name": "Микрофон TEYES для CC4",
-  "image": null,
-  "price": 5500,
-  "priceFrom": true,
-  "condition": "Новая",
-  "warranty": true,
-  "order": "Под заказ · 2–3 дня",
-  "description": "Выносной микрофон для громкой связи.",
-  "memo": "",
-  "variants": [
-   {
-    "name": "Цифровой (одинарный/двойной)",
-    "price": 5500
-   },
-   {
-    "name": "Аналоговый скрытый (CC4 PRO)",
-    "price": 5600
-   },
-   {
-    "name": "Цифровой скрытый (CC4 PRO)",
-    "price": 5800
    }
   ]
  },
@@ -800,7 +737,7 @@ const TEYES = [
   "name": "Парктроники TEYES",
   "image": "images/teyes/image14.jpg",
   "price": 9600,
-  "priceFrom": true,
+  "priceFrom": false,
   "condition": "Новая",
   "warranty": true,
   "order": "Под заказ · 2–3 дня",
@@ -822,10 +759,6 @@ const TEYES = [
    {
     "name": "R1 · белые",
     "price": 9600
-   },
-   {
-    "name": "R2 · 8 датчиков",
-    "price": 14000
    }
   ]
  },
