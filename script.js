@@ -138,6 +138,7 @@ const countEl = document.getElementById("catalogCount");
 const moreBtn = document.getElementById("moreBtn");
 const searchInput = document.getElementById("searchInput");
 
+const JP_FIRST = ["Toyota", "Honda", "Nissan", "Mazda", "Mitsubishi", "Subaru", "Suzuki", "Lexus", "Daihatsu", "Infiniti", "Isuzu"];
 function filtered(withFilters = true) {
   const words = state.query.toLowerCase().split(/\s+/).filter(Boolean);
   const list = ITEMS.filter(p => {
@@ -148,7 +149,11 @@ function filtered(withFilters = true) {
     return words.every(w => text.includes(w));
   });
   // В разделе рамок сначала новые (под заказ), потом папины в наличии (папа, 07.11.2026)
-  if (state.category === "Рамки и крепления") return [...list.filter(p => p.order), ...list.filter(p => !p.order)];
+  // и среди новых — сначала японские марки (папа, 07.11.2026)
+  if (state.category === "Рамки и крепления") {
+    const rank = p => p.order ? (JP_FIRST.indexOf(p.car) + 1 || JP_FIRST.length + 1) : JP_FIRST.length + 2;
+    return list.map((p, i) => [p, i]).sort((a, b) => rank(a[0]) - rank(b[0]) || a[1] - b[1]).map(x => x[0]);
+  }
   return list;
 }
 
