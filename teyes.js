@@ -641,7 +641,7 @@ const TEYES = [
   "category": "TEYES под заказ",
   "name": "Видеорегистратор TEYES X5",
   "image": "images/teyes/image5.jpg",
-  "price": 7200,
+  "price": 4200,
   "priceFrom": false,
   "condition": "Новая",
   "warranty": true,
@@ -655,7 +655,7 @@ const TEYES = [
   "category": "TEYES под заказ",
   "name": "Датчики давления в шинах TEYES (TPMS, USB)",
   "image": "images/teyes/image6.jpg",
-  "price": 7500,
+  "price": 4500,
   "priceFrom": false,
   "condition": "Новая",
   "warranty": true,
@@ -669,7 +669,7 @@ const TEYES = [
   "category": "TEYES под заказ",
   "name": "Камера заднего вида TEYES AHD",
   "image": "images/teyes/image23.jpg",
-  "price": 5300,
+  "price": 2300,
   "priceFrom": true,
   "condition": "Новая",
   "warranty": true,
@@ -679,11 +679,11 @@ const TEYES = [
   "variants": [
    {
     "name": "AHD",
-    "price": 5300
+    "price": 2300
    },
    {
     "name": "Sony AHD 1280×960",
-    "price": 5600
+    "price": 2600
    }
   ]
  },
@@ -692,7 +692,7 @@ const TEYES = [
   "category": "TEYES под заказ",
   "name": "Камера заднего вида TEYES 2 в 1 (360 + ADAS)",
   "image": "images/teyes/image26.jpg",
-  "price": 8700,
+  "price": 5700,
   "priceFrom": false,
   "condition": "Новая",
   "warranty": true,
@@ -706,7 +706,7 @@ const TEYES = [
   "category": "TEYES под заказ",
   "name": "Видеорегистратор TEYES для CC4",
   "image": "images/teyes/image25.jpg",
-  "price": 5500,
+  "price": 2500,
   "priceFrom": true,
   "condition": "Новая",
   "warranty": true,
@@ -716,19 +716,19 @@ const TEYES = [
   "variants": [
    {
     "name": "CC4 AHD DVR",
-    "price": 5500
+    "price": 2500
    },
    {
     "name": "CC4 AHD (передний)",
-    "price": 5800
+    "price": 2800
    },
    {
     "name": "CC4 PRO DVR",
-    "price": 6600
+    "price": 3600
    },
    {
     "name": "CC4 AHD DVR BOX",
-    "price": 6800
+    "price": 3800
    }
   ]
  },
@@ -737,7 +737,7 @@ const TEYES = [
   "category": "TEYES под заказ",
   "name": "Камеры TEYES для CC4",
   "image": "images/teyes/image19.jpg",
-  "price": 6600,
+  "price": 3600,
   "priceFrom": true,
   "condition": "Новая",
   "warranty": true,
@@ -747,23 +747,23 @@ const TEYES = [
   "variants": [
    {
     "name": "Передняя камера",
-    "price": 6600
+    "price": 3600
    },
    {
     "name": "Камера заднего вида",
-    "price": 6600
+    "price": 3600
    },
    {
     "name": "Круговой обзор 360° (CC4)",
-    "price": 10100
+    "price": 7100
    },
    {
     "name": "Круговой обзор 360° (CC4 PRO)",
-    "price": 15500
+    "price": 12500
    },
    {
     "name": "Круговой обзор 360° с ADAS",
-    "price": 17800
+    "price": 14800
    }
   ]
  },
@@ -772,7 +772,7 @@ const TEYES = [
   "category": "TEYES под заказ",
   "name": "Микрофон TEYES для CC4",
   "image": null,
-  "price": 5500,
+  "price": 2500,
   "priceFrom": true,
   "condition": "Новая",
   "warranty": true,
@@ -782,15 +782,15 @@ const TEYES = [
   "variants": [
    {
     "name": "Цифровой (одинарный/двойной)",
-    "price": 5500
+    "price": 2500
    },
    {
     "name": "Аналоговый скрытый (CC4 PRO)",
-    "price": 5600
+    "price": 2600
    },
    {
     "name": "Цифровой скрытый (CC4 PRO)",
-    "price": 5800
+    "price": 2800
    }
   ]
  },
@@ -799,7 +799,7 @@ const TEYES = [
   "category": "TEYES под заказ",
   "name": "Парктроники TEYES",
   "image": "images/teyes/image14.jpg",
-  "price": 9600,
+  "price": 6600,
   "priceFrom": true,
   "condition": "Новая",
   "warranty": true,
@@ -809,23 +809,23 @@ const TEYES = [
   "variants": [
    {
     "name": "R1 · чёрные",
-    "price": 9600
+    "price": 6600
    },
    {
     "name": "R1 · серебристые",
-    "price": 9600
+    "price": 6600
    },
    {
     "name": "R1 · серые",
-    "price": 9600
+    "price": 6600
    },
    {
     "name": "R1 · белые",
-    "price": 9600
+    "price": 6600
    },
    {
     "name": "R2 · 8 датчиков",
-    "price": 14000
+    "price": 11000
    }
   ]
  },
@@ -834,7 +834,7 @@ const TEYES = [
   "category": "TEYES под заказ",
   "name": "OBD2-адаптер TEYES",
   "image": "images/teyes/image15.jpg",
-  "price": 5700,
+  "price": 2700,
   "priceFrom": false,
   "condition": "Новая",
   "warranty": true,
