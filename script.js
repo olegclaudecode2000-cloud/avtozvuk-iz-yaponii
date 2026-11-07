@@ -24,6 +24,7 @@ const withOem = p => p.oem
 const ITEMS = [
   ...PRODUCTS,
   ...CATALOG.map((p, i) => ({ ...p, id: 1000 + i })),
+  ...(typeof TEYES === "undefined" ? [] : TEYES).map((p, i) => ({ ...p, id: 3000 + i })), // TEYES под заказ (teyes.js)
 ].map(withOem);
 document.querySelectorAll("[data-count]").forEach(el => el.textContent = ITEMS.length);
 
@@ -31,6 +32,7 @@ document.querySelectorAll("[data-count]").forEach(el => el.textContent = ITEMS.l
 const svg = inner => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${inner}</svg>`;
 const ICONS = {
   "Android-магнитолы": svg('<rect x="2.5" y="5" width="19" height="13" rx="2"/><path d="M6 8.5h12v6H6z"/><path d="M9 21h6"/>'),
+  "TEYES под заказ": svg('<rect x="2.5" y="5" width="19" height="13" rx="2"/><path d="M6 8.5h12v6H6z"/><path d="M9 21h6"/>'),
   "Японские магнитолы": svg('<rect x="2" y="7" width="20" height="10" rx="2"/><circle cx="7" cy="12" r="2.2"/><path d="M12 10h7M12 14h5"/>'),
   "Рамки и крепления": svg('<rect x="3" y="4" width="18" height="16" rx="2"/><rect x="7" y="8" width="10" height="8" rx="1"/><path d="M3 9h2M3 15h2M19 9h2M19 15h2"/>'),
   "Сигнализации Pandora": svg('<path d="M12 2 4 5v6c0 5 3.4 9.4 8 11 4.6-1.6 8-6 8-11V5z"/><path d="m9 12 2 2 4-4"/>'),
@@ -139,7 +141,7 @@ function filtered(withFilters = true) {
     if (withFilters && state.category && p.category !== state.category) return false;
     if (withFilters && state.car && p.car !== state.car) return false;
     if (withFilters && state.cond && condOf(p) !== state.cond) return false;
-    const text = [p.name, p.category, p.car, p.condition || "", p.description || ""].join(" ").toLowerCase();
+    const text = [p.name, p.category, p.car, p.condition || "", p.description || "", ...(p.variants || []).map(v => v.name)].join(" ").toLowerCase();
     return words.every(w => text.includes(w));
   });
 }
@@ -153,6 +155,8 @@ function card(p) {
       <h3 class="card__name">${escapeHtml(p.name)}</h3>
       <div class="card__meta">
         ${p.condition ? `<span class="badge${condOf(p) === "new" ? " badge--ok" : ""}">${escapeHtml(p.condition)}</span>` : ""}
+        ${p.order ? `<span class="badge badge--order">${escapeHtml(p.order)}</span>` : ""}
+        ${p.variants && p.variants.length > 1 ? `<span class="badge">${p.variants.length} вариант${plural(p.variants.length)}</span>` : ""}
         ${p.warranty ? '<span class="badge badge--ok">Гарантия</span>' : ""}
         ${p.freeDelivery ? '<span class="badge badge--ok">Доставка до ТК бесплатно</span>' : ""}
       </div>
@@ -266,6 +270,7 @@ function openProduct(id) {
     p.car && ["Для машины", p.car],
     p.condition && ["Состояние", p.condition],
     p.warranty && ["Гарантия", "Да, осмотр на месте"],
+    p.order && ["Срок", p.order],
     ["Доставка", "По всей России. До ТК в Находке — " + (p.freeDelivery ? "бесплатно" : "300 ₽")],
     ["Оплата", "Наличными или по договорённости"],
   ].filter(Boolean);
@@ -276,6 +281,7 @@ function openProduct(id) {
       <h2>${escapeHtml(p.name)}</h2>
       ${p.description ? `<p>${escapeHtml(p.description)}</p>` : ""}
       <table class="specs">${rows.map(([k, v]) => `<tr><td>${escapeHtml(k)}</td><td>${escapeHtml(v)}</td></tr>`).join("")}</table>
+      ${variantsBlock(p)}
       <div class="modal__price">${priceText(p)}</div>
       <a class="btn btn--accent btn--big btn--wide" href="${PHONE_LINK}">Позвонить: ${PHONE_TEXT}</a>
       ${MAX_LINK ? `<a class="btn btn--max btn--big btn--wide modal__max" href="${escapeHtml(MAX_LINK)}" target="_blank" rel="noopener">Написать в MAX</a>` : ""}
@@ -288,8 +294,20 @@ function openProduct(id) {
   initGallery(modalBody);
 }
 
-// Своя ссылка у каждого товара: номер объявления на Фарпосте (не меняется), иначе номер на сайте
-const linkKey = p => (p.farpost && (p.farpost.match(/-(\d+)\.html/) || [])[1]) || "p" + p.id;
+// Варианты одной модели (экран, память) — у TEYES под заказ
+const plural = n => n % 10 === 1 && n % 100 !== 11 ? "" : n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 10 || n % 100 >= 20) ? "а" : "ов";
+function variantsBlock(p) {
+  if (!p.variants || !p.variants.length) return "";
+  return `<div class="variants">
+    <h3>Варианты и цены</h3>
+    <table class="variants__table">${p.variants.map(v =>
+      `<tr><td>${escapeHtml(v.name)}</td><td>${v.price.toLocaleString("ru-RU")} ₽</td></tr>`).join("")}</table>
+    ${p.memo ? `<p class="variants__memo">${escapeHtml(p.memo)}</p>` : ""}
+  </div>`;
+}
+
+// Своя ссылка у каждого товара: номер объявления на Фарпосте (не меняется), у TEYES — своё имя, иначе номер на сайте
+const linkKey = p => p.key || (p.farpost && (p.farpost.match(/-(\d+)\.html/) || [])[1]) || "p" + p.id;
 const shareTip = text => { const t = document.getElementById("shareTip"); t.textContent = text; t.hidden = false; };
 modalBody.addEventListener("click", async e => {
   if (!e.target.closest("[data-share]")) return;
