@@ -54,7 +54,7 @@ const PRODUCTS = [
 // Направления — плитки над каталогом. filter — какой раздел каталога открыть.
 const DIRECTIONS = [
   { title: "Android-магнитолы", text: "Новые, с гарантией, от 8 000 ₽", image: "images/honda.jpg", filter: "Android-магнитолы" },
-  { title: "Магнитолы TEYES под заказ", text: "Привезём за 2–3 дня, от 12 000 ₽. Камеры, регистраторы, парктроники", image: "images/teyes/image2.jpg", filter: "TEYES под заказ" },
+  { title: "Магнитолы TEYES под заказ", text: "От 12 000 ₽. Камеры, регистраторы, парктроники", image: "images/teyes/image2.jpg", filter: "TEYES под заказ" },
   { title: "Японские магнитолы", text: "Pioneer, Kenwood, Alpine, Toyota, Clarion и другие", image: "images/tile-japan.jpg", filter: "Японские магнитолы" },
   { title: "Сигнализации Pandora", text: "Есть и другие сигнализации в наличии. Возможна установка", image: "images/fp/64527981.jpg", filter: "Сигнализации Pandora" },
   { title: "Рамки, крепления, провода", text: "Под Toyota, Honda, Nissan, Mazda, Subaru", image: "images/tile-frames.jpg", filter: "Рамки и крепления" },
