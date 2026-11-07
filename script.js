@@ -25,6 +25,8 @@ const ITEMS = [
   ...PRODUCTS,
   ...CATALOG.map((p, i) => ({ ...p, id: 1000 + i })),
   ...(typeof TEYES === "undefined" ? [] : TEYES).map((p, i) => ({ ...p, id: 3000 + i })), // TEYES под заказ (teyes.js)
+  ...(typeof CARHEAVEN === "undefined" ? [] : CARHEAVEN).map((p, i) => ({ ...p, id: 4000 + i })), // Car Heaven под заказ (carheaven.js)
+  ...(typeof RAMKI === "undefined" ? [] : RAMKI).map((p, i) => ({ ...p, id: 5000 + i })), // рамки и провода под заказ (ramki.js)
 ].map(withOem);
 document.querySelectorAll("[data-count]").forEach(el => el.textContent = ITEMS.length);
 
@@ -33,6 +35,7 @@ const svg = inner => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
 const ICONS = {
   "Android-магнитолы": svg('<rect x="2.5" y="5" width="19" height="13" rx="2"/><path d="M6 8.5h12v6H6z"/><path d="M9 21h6"/>'),
   "TEYES под заказ": svg('<rect x="2.5" y="5" width="19" height="13" rx="2"/><path d="M6 8.5h12v6H6z"/><path d="M9 21h6"/>'),
+  "Car Heaven под заказ": svg('<rect x="2.5" y="5" width="19" height="13" rx="2"/><path d="M6 8.5h12v6H6z"/><path d="M9 21h6"/>'),
   "Японские магнитолы": svg('<rect x="2" y="7" width="20" height="10" rx="2"/><circle cx="7" cy="12" r="2.2"/><path d="M12 10h7M12 14h5"/>'),
   "Рамки и крепления": svg('<rect x="3" y="4" width="18" height="16" rx="2"/><rect x="7" y="8" width="10" height="8" rx="1"/><path d="M3 9h2M3 15h2M19 9h2M19 15h2"/>'),
   "Сигнализации Pandora": svg('<path d="M12 2 4 5v6c0 5 3.4 9.4 8 11 4.6-1.6 8-6 8-11V5z"/><path d="m9 12 2 2 4-4"/>'),
@@ -141,7 +144,7 @@ function filtered(withFilters = true) {
     if (withFilters && state.category && p.category !== state.category) return false;
     if (withFilters && state.car && p.car !== state.car) return false;
     if (withFilters && state.cond && condOf(p) !== state.cond) return false;
-    const text = [p.name, p.category, p.car, p.condition || "", p.description || "", ...(p.variants || []).map(v => v.name)].join(" ").toLowerCase();
+    const text = [p.name, p.category, p.car, p.condition || "", p.description || "", p.code || "", ...(p.variants || []).map(v => v.name)].join(" ").toLowerCase();
     return words.every(w => text.includes(w));
   });
 }

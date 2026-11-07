@@ -57,8 +57,8 @@ const DIRECTIONS = [
   { title: "Магнитолы TEYES под заказ", text: "От 12 000 ₽. Камеры, регистраторы, парктроники", image: "images/teyes/image2.jpg", filter: "TEYES под заказ" },
   { title: "Японские магнитолы", text: "Pioneer, Kenwood, Alpine, Toyota, Clarion и другие", image: "images/tile-japan.jpg", filter: "Японские магнитолы" },
   { title: "Сигнализации Pandora", text: "Есть и другие сигнализации в наличии. Возможна установка", image: "images/fp/64527981.jpg", filter: "Сигнализации Pandora" },
-  { title: "Рамки, крепления, провода", text: "Под Toyota, Honda, Nissan, Mazda, Subaru", image: "images/tile-frames.jpg", filter: "Рамки и крепления" },
+  { title: "Рамки, крепления, провода", text: "Для 40+ марок машин — в наличии и под заказ", image: "images/tile-frames.jpg", filter: "Рамки и крепления" },
 ];
 
 // Разделы каталога в нужном порядке
-const CATEGORIES = ["Android-магнитолы", "TEYES под заказ", "Японские магнитолы", "Сигнализации Pandora", "Рамки и крепления", "Провода и аксессуары"];
+const CATEGORIES = ["Android-магнитолы", "TEYES под заказ", "Car Heaven под заказ", "Японские магнитолы", "Сигнализации Pandora", "Рамки и крепления", "Провода и аксессуары"];
