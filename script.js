@@ -140,13 +140,16 @@ const searchInput = document.getElementById("searchInput");
 
 function filtered(withFilters = true) {
   const words = state.query.toLowerCase().split(/\s+/).filter(Boolean);
-  return ITEMS.filter(p => {
+  const list = ITEMS.filter(p => {
     if (withFilters && state.category && p.category !== state.category) return false;
     if (withFilters && state.car && p.car !== state.car) return false;
     if (withFilters && state.cond && condOf(p) !== state.cond) return false;
     const text = [p.name, p.category, p.car, p.condition || "", p.description || "", p.code || "", ...(p.variants || []).map(v => v.name)].join(" ").toLowerCase();
     return words.every(w => text.includes(w));
   });
+  // В разделе рамок сначала новые (под заказ), потом папины в наличии (папа, 07.11.2026)
+  if (state.category === "Рамки и крепления") return [...list.filter(p => p.order), ...list.filter(p => !p.order)];
+  return list;
 }
 
 function card(p) {
