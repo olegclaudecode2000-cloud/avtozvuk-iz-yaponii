@@ -377,7 +377,11 @@ const TEYES = [
   "key": "teyes-tpro",
   "category": "TEYES под заказ",
   "name": "TEYES TPRO 9,7″ (вертикальный экран)",
-  "image": null,
+  "image": "images/teyes/tpro-1.jpg",
+  "images": [
+   "images/teyes/tpro-1.jpg",
+   "images/teyes/tpro-2.jpg"
+  ],
   "price": 25100,
   "priceFrom": true,
   "condition": "Новая",
