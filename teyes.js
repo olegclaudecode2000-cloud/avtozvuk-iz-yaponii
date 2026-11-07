@@ -529,7 +529,7 @@ const TEYES = [
   "category": "TEYES под заказ",
   "name": "TEYES CC4L",
   "image": "images/teyes/image1.jpg",
-  "price": 19400,
+  "price": 18500,
   "priceFrom": true,
   "condition": "Новая",
   "warranty": true,
@@ -539,7 +539,7 @@ const TEYES = [
   "variants": [
    {
     "name": "4/64 ГБ",
-    "price": 19400
+    "price": 18500
    },
    {
     "name": "6/64 ГБ",
