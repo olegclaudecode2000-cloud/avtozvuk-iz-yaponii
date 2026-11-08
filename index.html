@@ -50,7 +50,7 @@
   </script>
 
   <link rel="preload" href="fonts/russo-one-cyrillic.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="styles.css?v=20261107a">
+  <link rel="stylesheet" href="styles.css?v=20261108b">
 </head>
 <body>
 
@@ -108,10 +108,11 @@
     </div>
     <form class="search" id="searchForm" role="search">
       <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg>
-      <input id="searchInput" type="search" enterkeyhint="search" placeholder="Поиск: Pioneer, Prius, рамка, USB…" autocomplete="off" aria-label="Поиск по каталогу">
+      <input id="searchInput" type="search" enterkeyhint="search" placeholder="Поиск: пионер, приус, рамка аква, USB…" autocomplete="off" aria-label="Поиск по каталогу">
     </form>
     <div class="tabs" id="catTabs"></div>
     <div class="chips" id="carChips"></div>
+    <div class="chips" id="modelChips" hidden></div>
     <div class="chips" id="condChips"></div>
     <p class="catalog__count" id="catalogCount"></p>
     <div class="grid" id="productGrid"></div>
@@ -193,6 +194,19 @@
     </div>
   </section>
 
+  <!-- seo-links -->
+  <nav class="seo-links" aria-label="Каталог по разделам и маркам">
+    <div class="container">
+      <h2>Разделы</h2>
+      <div><a href="razdel/android/">Android-магнитолы</a><a href="razdel/teyes/">TEYES под заказ</a><a href="razdel/car-heaven/">Car Heaven под заказ</a><a href="razdel/yaponskie/">Японские магнитолы</a><a href="razdel/pandora/">Сигнализации Pandora</a><a href="razdel/ramki/">Рамки и крепления</a><a href="razdel/provoda/">Провода и аксессуары</a><a href="ustanovka/">Установка магнитолы</a></div>
+      <h2>Рамки для магнитол по маркам</h2>
+      <div><a href="ramki/toyota/">Toyota</a><a href="ramki/honda/">Honda</a><a href="ramki/nissan/">Nissan</a><a href="ramki/mitsubishi/">Mitsubishi</a><a href="ramki/hyundai/">Hyundai</a><a href="ramki/kia/">Kia</a><a href="ramki/ford/">Ford</a><a href="ramki/volkswagen/">Volkswagen</a><a href="ramki/suzuki/">Suzuki</a><a href="ramki/lexus/">Lexus</a><a href="ramki/mazda/">Mazda</a><a href="ramki/subaru/">Subaru</a><a href="ramki/mercedes-benz/">Mercedes-Benz</a><a href="ramki/chevrolet/">Chevrolet</a><a href="ramki/renault/">Renault</a><a href="ramki/lada/">Lada</a><a href="ramki/daihatsu/">Daihatsu</a><a href="ramki/jeep/">Jeep</a><a href="ramki/skoda/">Skoda</a><a href="ramki/bmw/">BMW</a><a href="ramki/infiniti/">Infiniti</a><a href="ramki/fiat/">Fiat</a><a href="ramki/chery/">Chery</a><a href="ramki/peugeot/">Peugeot</a><a href="ramki/ssangyong/">SsangYong</a><a href="ramki/volvo/">Volvo</a><a href="ramki/audi/">Audi</a><a href="ramki/gaz/">ГАЗ</a><a href="ramki/opel/">Opel</a><a href="ramki/geely/">Geely</a><a href="ramki/hummer/">Hummer</a><a href="ramki/isuzu/">Isuzu</a><a href="ramki/lifan/">Lifan</a><a href="ramki/uaz/">УАЗ</a><a href="ramki/daewoo/">Daewoo</a><a href="ramki/chrysler/">Chrysler</a><a href="ramki/dodge/">Dodge</a><a href="ramki/great-wall/">Great Wall</a><a href="ramki/citroen/">Citroen</a><a href="ramki/seat/">Seat</a><a href="ramki/faw/">FAW</a><a href="ramki/porsche/">Porsche</a><a href="ramki/jac/">JAC</a></div>
+      <h2>Магнитолы по маркам</h2>
+      <div><a href="magnitoly/toyota/">Toyota</a><a href="magnitoly/honda/">Honda</a><a href="magnitoly/nissan/">Nissan</a><a href="magnitoly/mitsubishi/">Mitsubishi</a><a href="magnitoly/hyundai/">Hyundai</a><a href="magnitoly/kia/">Kia</a><a href="magnitoly/ford/">Ford</a><a href="magnitoly/volkswagen/">Volkswagen</a><a href="magnitoly/suzuki/">Suzuki</a><a href="magnitoly/lexus/">Lexus</a><a href="magnitoly/mazda/">Mazda</a><a href="magnitoly/subaru/">Subaru</a><a href="magnitoly/mercedes-benz/">Mercedes-Benz</a><a href="magnitoly/chevrolet/">Chevrolet</a><a href="magnitoly/renault/">Renault</a><a href="magnitoly/lada/">Lada</a><a href="magnitoly/daihatsu/">Daihatsu</a><a href="magnitoly/jeep/">Jeep</a><a href="magnitoly/skoda/">Skoda</a><a href="magnitoly/bmw/">BMW</a><a href="magnitoly/infiniti/">Infiniti</a><a href="magnitoly/fiat/">Fiat</a><a href="magnitoly/chery/">Chery</a><a href="magnitoly/peugeot/">Peugeot</a><a href="magnitoly/ssangyong/">SsangYong</a><a href="magnitoly/volvo/">Volvo</a><a href="magnitoly/audi/">Audi</a><a href="magnitoly/gaz/">ГАЗ</a><a href="magnitoly/opel/">Opel</a><a href="magnitoly/geely/">Geely</a><a href="magnitoly/hummer/">Hummer</a></div>
+    </div>
+  </nav>
+  <!-- /seo-links -->
+
   <footer class="footer">
     <div class="container footer__row">
       <span>© Автозвук из Японии, Находка</span>
@@ -216,6 +230,8 @@
   <script src="teyes.js?v=20261107h"></script>
   <script src="carheaven.js?v=20261107a"></script>
   <script src="ramki.js?v=20261107a"></script>
-  <script src="script.js?v=20261107e"></script>
+  <script src="models.js?v=20261108a"></script>
+  <script src="ru-search.js?v=20261108a"></script>
+  <script src="script.js?v=20261108c"></script>
 </body>
 </html>

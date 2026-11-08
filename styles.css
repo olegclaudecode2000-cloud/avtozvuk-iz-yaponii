@@ -475,3 +475,57 @@ body {
 .variants__table td { padding: 8px 0; border-bottom: 1px solid var(--border); }
 .variants__table td:last-child { text-align: right; font-weight: 700; color: var(--accent); white-space: nowrap; padding-left: 12px; }
 .variants__memo { margin: 10px 0 0; font-size: .875rem; color: var(--muted); }
+
+/* Выбор марки и модели в каталоге */
+.chip--select { max-width: 100%; padding-right: 8px; background: var(--surface); }
+.chip--select option { background: var(--surface); color: var(--text); }
+.chip.chip--select.is-active { background: var(--surface); }
+.empty-tip { display: block; margin-top: 10px; color: var(--text); }
+
+/* Комплект к магнитоле в окне товара */
+.kit { margin: 22px 0 14px; padding: 16px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface-2); }
+.kit h3 { margin: 0 0 12px; font-size: 1.05rem; }
+.kit h4 { margin: 14px 0 6px; font-size: .95rem; color: var(--muted); }
+.kit__selects { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.kit__selects select { width: 100%; min-height: 44px; padding: 8px 10px; font: inherit; color: var(--text); background: var(--surface); border: 1px solid var(--border); border-radius: 10px; }
+.kit__selects select:disabled { opacity: .55; }
+.kit__item { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; width: 100%; padding: 10px 0; font: inherit; font-size: .95rem; text-align: left; color: var(--text); background: none; border: 0; border-bottom: 1px solid var(--border); cursor: pointer; }
+.kit__item:hover span { color: var(--accent); }
+.kit__item b { flex: none; color: var(--accent); }
+.kit__item--static { margin-top: 10px; cursor: default; }
+.kit__item--static:hover span { color: inherit; }
+.kit__all { padding: 10px 0 2px; font: inherit; font-size: .92rem; font-weight: 700; color: var(--accent); background: none; border: 0; cursor: pointer; }
+.kit__total { margin: 14px 0 6px; font-size: 1.05rem; }
+.kit__total b { color: var(--accent); }
+.kit__hint { margin: 10px 0 0; font-size: .875rem; color: var(--muted); }
+
+/* Страницы для поисковиков */
+.seo-main { padding-block: 22px 40px; }
+.seo-crumbs { margin-bottom: 14px; font-size: .88rem; color: var(--muted); }
+.seo-crumbs a { color: var(--muted); }
+.seo-crumbs span { margin: 0 4px; }
+.seo-main h1 { font-size: clamp(1.6rem, 3.4vw, 2.3rem); }
+.seo-intro { max-width: 760px; font-size: 1.05rem; color: var(--muted); }
+.seo-cta { display: flex; flex-wrap: wrap; gap: 10px; margin: 16px 0 24px; }
+.seo-h2 { margin: 22px 0 10px; font-size: 1.15rem; }
+.seo-chips a { display: inline-flex; align-items: center; text-decoration: none; }
+.seo-chips small { margin-left: 5px; color: var(--muted); }
+.seo-card { display: block; color: inherit; text-decoration: none; }
+.seo-more { margin: 24px 0 8px; text-align: center; }
+.seo-note { margin: 22px 0; padding: 14px 16px; border-radius: var(--radius); background: var(--surface-2); color: var(--text); font-size: .92rem; }
+.seo-others { margin-top: 22px; }
+.seo-others h2 { font-size: 1.05rem; }
+.seo-others__list { display: flex; flex-wrap: wrap; gap: 8px 16px; }
+.seo-others__list a { color: var(--accent); font-weight: 600; text-decoration: none; }
+.seo-others__list a:hover { text-decoration: underline; }
+.seo-prices { width: 100%; max-width: 620px; border-collapse: collapse; }
+.seo-prices td { padding: 10px 0; border-bottom: 1px solid var(--border); }
+.seo-prices td:last-child { padding-left: 12px; text-align: right; font-weight: 700; color: var(--accent); white-space: nowrap; }
+.seo-links { padding: 28px 0 34px; background: var(--surface); color: var(--muted); }
+.seo-links h2 { margin: 0 0 10px; font-size: 1.05rem; color: var(--text); }
+.seo-links h2 + div { margin-bottom: 18px; }
+.seo-links a { display: inline-block; margin: 0 14px 8px 0; font-size: .92rem; color: var(--text); text-decoration: none; }
+.seo-links a:hover { color: var(--accent); }
+
+/* Длинные надписи на кнопках переносятся и не раздвигают узкий экран */
+.catalog__count .btn, .seo-more .btn, .seo-cta .btn { max-width: 100%; white-space: normal; text-align: center; }

@@ -26,8 +26,8 @@ const ITEMS = [
   ...CATALOG.map((p, i) => ({ ...p, id: 1000 + i })),
   ...(typeof TEYES === "undefined" ? [] : TEYES).map((p, i) => ({ ...p, id: 3000 + i })), // TEYES под заказ (teyes.js)
   ...(typeof CARHEAVEN === "undefined" ? [] : CARHEAVEN).map((p, i) => ({ ...p, id: 4000 + i })), // Car Heaven под заказ (carheaven.js)
-  ...(typeof RAMKI === "undefined" ? [] : RAMKI).map((p, i) => ({ ...p, id: 5000 + i })), // рамки и провода под заказ (ramki.js)
-].map(withOem);
+  ...(typeof RAMKI === "undefined" ? [] : RAMKI).map((p, i) => ({ ...p, id: 5000 + i, name: cleanName(p.name) })), // рамки и провода под заказ (ramki.js)
+].map(withOem).map(tagCars); // марки и модели из названий — models.js
 document.querySelectorAll("[data-count]").forEach(el => el.textContent = ITEMS.length);
 
 // Рисунки вместо фото, пока своих фото нет
@@ -124,37 +124,46 @@ directions.addEventListener("click", e => {
 
 // Каталог: раздел, марка машины, поиск
 const PAGE = 24;
-const state = { category: "", car: "", cond: "", query: "", shown: PAGE };
+const state = { category: "", car: "", model: "", cond: "", query: "", shown: PAGE };
 // Состояние товара: новый или б/у (из объявления на Фарпосте)
 const condOf = p => /б\/у/i.test(p.condition || "") ? "used" : /^нов/i.test(p.condition || "") ? "new" : "";
 const CONDS = [["", "Любое"], ["new", "Новые"], ["used", "Б/у"]];
-const CARS = [...new Set(ITEMS.map(p => p.car).filter(Boolean))];
+const JP_FIRST = ["Toyota", "Honda", "Nissan", "Mazda", "Mitsubishi", "Subaru", "Suzuki", "Lexus", "Daihatsu", "Infiniti", "Isuzu"];
+// Японские марки — кнопками, остальные — в выпадающем списке, чтобы не занимать пол-экрана
+const CARS = [...new Set(ITEMS.flatMap(p => p.cars))].sort((a, b) =>
+  (JP_FIRST.indexOf(a) + 1 || 99) - (JP_FIRST.indexOf(b) + 1 || 99) || a.localeCompare(b));
+const hasCar = (p, c) => p.cars.includes(c);
+const hasModel = (p, c, m) => p.models.includes(c + "|" + m);
 
 const grid = document.getElementById("productGrid");
 const catTabs = document.getElementById("catTabs");
 const carChips = document.getElementById("carChips");
+const modelChips = document.getElementById("modelChips");
 const condChips = document.getElementById("condChips");
 const countEl = document.getElementById("catalogCount");
 const moreBtn = document.getElementById("moreBtn");
 const searchInput = document.getElementById("searchInput");
 
-const JP_FIRST = ["Toyota", "Honda", "Nissan", "Mazda", "Mitsubishi", "Subaru", "Suzuki", "Lexus", "Daihatsu", "Infiniti", "Isuzu"];
 function filtered(withFilters = true) {
-  const words = state.query.toLowerCase().split(/\s+/).filter(Boolean);
+  const terms = searchTerms(state.query); // русские названия машин и брендов — ru-search.js
   const list = ITEMS.filter(p => {
     if (withFilters && state.category && p.category !== state.category) return false;
-    if (withFilters && state.car && p.car !== state.car) return false;
+    if (withFilters && state.car && !hasCar(p, state.car)) return false;
+    if (withFilters && state.model && !hasModel(p, state.car, state.model)) return false;
     if (withFilters && state.cond && condOf(p) !== state.cond) return false;
-    const text = [p.name, p.category, p.car, p.condition || "", p.description || "", p.code || "", ...(p.variants || []).map(v => v.name)].join(" ").toLowerCase();
-    return words.every(w => text.includes(w));
+    const text = [p.name, p.category, p.cars.join(" "), p.condition || "", p.description || "", p.code || "", ...(p.variants || []).map(v => v.name)].join(" ").toLowerCase().replace(/ё/g, "е");
+    return terms.every(alts => alts.some(w => text.includes(w)));
   });
+  // При поиске сначала то, где слова есть в названии: иначе «провода тойота» начнётся с рамок,
+  // у которых провода упомянуты в описании
+  const hit = t => terms.every(alts => alts.some(w => t.includes(w)));
+  const score = p => { if (!terms.length) return 0; const n = p.name.toLowerCase().replace(/ё/g, "е"); return hit(n) ? 2 : hit(n + " " + p.category.toLowerCase()) ? 1 : 0; };
   // В разделе рамок сначала новые (под заказ), потом папины в наличии (папа, 07.11.2026)
   // и среди новых — сначала японские марки (папа, 07.11.2026)
-  if (state.category === "Рамки и крепления") {
-    const rank = p => p.order ? (JP_FIRST.indexOf(p.car) + 1 || JP_FIRST.length + 1) : JP_FIRST.length + 2;
-    return list.map((p, i) => [p, i]).sort((a, b) => rank(a[0]) - rank(b[0]) || a[1] - b[1]).map(x => x[0]);
-  }
-  return list;
+  const rank = state.category === "Рамки и крепления"
+    ? p => p.order ? (JP_FIRST.indexOf(p.car) + 1 || JP_FIRST.length + 1) : JP_FIRST.length + 2
+    : () => 0;
+  return list.map((p, i) => [p, i, score(p), rank(p)]).sort((a, b) => b[2] - a[2] || a[3] - b[3] || a[1] - b[1]).map(x => x[0]);
 }
 
 function card(p) {
@@ -193,13 +202,25 @@ function render() {
   }).join("");
   // Марки и состояние — только те, что есть в выбранном разделе (у сигнализаций марок нет — строка прячется)
   const inCat = ITEMS.filter(p => !state.category || p.category === state.category);
-  const cars = CARS.filter(c => inCat.some(p => p.car === c));
-  if (state.car && !cars.includes(state.car)) state.car = "";
+  const cars = CARS.filter(c => inCat.some(p => hasCar(p, c)));
+  if (state.car && !cars.includes(state.car)) { state.car = ""; state.model = ""; }
   carChips.hidden = !cars.length;
+  const otherCars = cars.filter(c => !JP_FIRST.includes(c));
   carChips.innerHTML = `<span class="chips__label">Для машины:</span>` +
-    ["", ...cars].map(c =>
-      `<button class="chip${state.car === c ? " is-active" : ""}" data-car="${escapeHtml(c)}">${c ? escapeHtml(c) : "Любой"}</button>`).join("");
-  const inCar = inCat.filter(p => !state.car || p.car === state.car);
+    ["", ...cars.filter(c => JP_FIRST.includes(c))].map(c =>
+      `<button class="chip${state.car === c ? " is-active" : ""}" data-car="${escapeHtml(c)}">${c ? escapeHtml(c) : "Любой"}</button>`).join("") +
+    (otherCars.length ? `<select class="chip chip--select${otherCars.includes(state.car) ? " is-active" : ""}" data-car-other aria-label="Другая марка">
+      <option value="">Другая марка…</option>${otherCars.map(c => `<option value="${escapeHtml(c)}"${state.car === c ? " selected" : ""}>${escapeHtml(c)}</option>`).join("")}</select>` : "");
+  const inCar = inCat.filter(p => (!state.car || hasCar(p, state.car)));
+  // Модели выбранной марки: только те, что есть в этом разделе
+  const modelCount = {};
+  if (state.car) inCar.forEach(p => p.models.forEach(k => { const [c, m] = k.split("|"); if (c === state.car) modelCount[m] = (modelCount[m] || 0) + 1; }));
+  const models = Object.keys(modelCount).sort((a, b) => a.localeCompare(b, "en", { numeric: true }));
+  if (state.model && !models.includes(state.model)) state.model = "";
+  modelChips.hidden = !models.length;
+  modelChips.innerHTML = models.length ? `<span class="chips__label">Модель:</span>
+    <select class="chip chip--select${state.model ? " is-active" : ""}" data-model aria-label="Модель машины">
+      <option value="">Все модели ${escapeHtml(state.car)}</option>${models.map(m => `<option value="${escapeHtml(m)}"${state.model === m ? " selected" : ""}>${escapeHtml(m)} (${modelCount[m]})</option>`).join("")}</select>` : "";
   const conds = CONDS.filter(([v]) => v && inCar.some(p => condOf(p) === v));
   if (state.cond && !conds.some(([v]) => v === state.cond)) state.cond = "";
   condChips.hidden = conds.length < 2;
@@ -208,23 +229,37 @@ function render() {
 
   const list = filtered();
   // Если ничего не нашлось из-за выбранного раздела или марки — подсказать и дать сбросить
-  const active = [state.category, state.car, state.cond && CONDS.find(c => c[0] === state.cond)[1]].filter(Boolean);
+  const active = [state.category, state.car, state.model, state.cond && CONDS.find(c => c[0] === state.cond)[1]].filter(Boolean);
   const without = active.length && !list.length ? filtered(false).length : 0;
+  const q = state.query.trim();
   countEl.innerHTML = list.length
     ? `Найдено: ${list.length}`
     : without
       ? `С фильтром «${escapeHtml(active.join(", "))}» ничего нет, но без фильтра нашлось: ${without}. <button class="btn btn--accent reset" data-reset>Показать все ${without}</button>`
-      : "Ничего не нашлось — позвоните, скорее всего подберём.";
+      : q && MAX_LINK
+        ? `Ничего не нашлось — скорее всего, подберём. <button class="btn btn--max reset" data-ask-empty>Спросить в MAX: «${escapeHtml(q.length > 30 ? q.slice(0, 30) + "…" : q)}»</button><span class="empty-tip" id="emptyTip" hidden></span>`
+        : "Ничего не нашлось — позвоните, скорее всего подберём.";
   grid.innerHTML = list.slice(0, state.shown).map(card).join("") + moreCard;
   const left = list.length - state.shown;
   moreBtn.hidden = left <= 0;
   moreBtn.textContent = `Показать ещё (${left})`;
 }
 
-countEl.addEventListener("click", e => {
+countEl.addEventListener("click", async e => {
+  // Ничего не нашлось: кнопка MAX сама готовит сообщение с тем, что человек искал
+  if (e.target.closest("[data-ask-empty]")) {
+    const text = `Здравствуйте! Ищу на сайте «Автозвук из Японии»: ${state.query.trim()}. Есть такое? Моя машина (марка, модель, год): `;
+    const tip = document.getElementById("emptyTip");
+    try { await navigator.clipboard.writeText(text); tip.textContent = "Текст скопирован — вставьте его в чат MAX и отправьте."; }
+    catch { tip.textContent = "Напишите в MAX: " + text; }
+    tip.hidden = false;
+    window.open(MAX_LINK, "_blank", "noopener");
+    return;
+  }
   if (!e.target.closest("[data-reset]")) return;
   state.category = "";
   state.car = "";
+  state.model = "";
   state.cond = "";
   state.shown = PAGE;
   render();
@@ -240,6 +275,19 @@ carChips.addEventListener("click", e => {
   const b = e.target.closest("[data-car]");
   if (!b) return;
   state.car = b.dataset.car;
+  state.model = "";
+  state.shown = PAGE;
+  render();
+});
+carChips.addEventListener("change", e => {
+  if (!e.target.matches("[data-car-other]")) return;
+  state.car = e.target.value;
+  state.model = "";
+  state.shown = PAGE;
+  render();
+});
+modelChips.addEventListener("change", e => {
+  state.model = e.target.value;
   state.shown = PAGE;
   render();
 });
@@ -296,6 +344,7 @@ function openProduct(id) {
       <div class="modal__price">${priceText(p)}</div>
       <a class="btn btn--accent btn--big btn--wide" href="${PHONE_LINK}">Позвонить: ${PHONE_TEXT}</a>
       ${MAX_LINK ? `<a class="btn btn--max btn--big btn--wide modal__max" href="${escapeHtml(MAX_LINK)}" target="_blank" rel="noopener">Написать в MAX</a>` : ""}
+      ${kitBlock(p)}
       ${p.farpost ? `<a class="btn btn--ghost btn--wide modal__farpost" href="${escapeHtml(p.farpost)}" target="_blank" rel="noopener">Фото и подробности на Фарпосте</a>` : ""}
       <button class="btn btn--ghost btn--wide modal__share" data-share>Поделиться ссылкой на товар</button>
       <p class="share__tip" id="shareTip" hidden></p>
@@ -304,6 +353,91 @@ function openProduct(id) {
   if (!modal.open) modal.showModal();
   initGallery(modalBody);
 }
+
+// Комплект к магнитоле: человек выбирает машину и сразу видит рамку, провода, установку и примерную сумму
+const KIT_CATS = ["Android-магнитолы", "TEYES под заказ", "Car Heaven под заказ"];
+const INSTALL_FROM = 1000; // как в разделе «Услуги»
+const FRAMES = ITEMS.filter(p => p.category === "Рамки и крепления");
+const WIRES = ITEMS.filter(p => p.category === "Провода и аксессуары" && /провод/i.test(p.name));
+const KIT_CARS = CARS.filter(c => FRAMES.some(p => hasCar(p, c)));
+const kit = { car: "", model: "" };
+const money = n => n.toLocaleString("ru-RU") + " ₽";
+const byPrice = (a, b) => a.price - b.price;
+// В прайсе бывают одинаковые строки и строки с двумя комплектами сразу — в подборе показываем по одному разу
+const uniq = list => [...new Map(list.filter(p => !/Комплект.*Комплект/.test(p.name)).map(p => [p.name + p.price, p])).values()];
+// Рамка уже входит в комплект магнитолы (например, Vezel) — подбирать нечего
+const hasOwnFrame = p => (p.specs || []).some(([k, v]) => /комплект/i.test(k) && /рамк/i.test(v));
+const kitModels = () => [...new Set(FRAMES.filter(f => hasCar(f, kit.car)).flatMap(f => f.models)
+  .filter(k => k.startsWith(kit.car + "|")).map(k => k.split("|")[1]))].sort((a, b) => a.localeCompare(b, "en", { numeric: true }));
+const kitModelOptions = () => `<option value="">${kit.car ? "Выберите модель" : "Сначала марка"}</option>` +
+  kitModels().map(m => `<option value="${escapeHtml(m)}"${kit.model === m ? " selected" : ""}>${escapeHtml(m)}</option>`).join("");
+function kitRow(x) {
+  return `<button type="button" class="kit__item" data-open-id="${x.id}"><span>${escapeHtml(x.name)}</span><b>${priceText(x)}</b></button>`;
+}
+function kitResult(p) {
+  if (!kit.car) return `<p class="kit__hint">Выберите марку и модель — покажем подходящую рамку и провода с ценами.</p>`;
+  const list = kitModels();
+  if (list.length && !kit.model) return `<p class="kit__hint">Теперь выберите модель ${escapeHtml(kit.car)}.</p>`;
+  const allFrames = FRAMES.filter(f => hasCar(f, kit.car) && (!kit.model || hasModel(f, kit.car, kit.model)));
+  const frames = uniq(allFrames).sort(byPrice);
+  const ofCar = WIRES.filter(w => hasCar(w, kit.car));
+  const own = kit.model ? ofCar.filter(w => hasModel(w, kit.car, kit.model)) : [];
+  const generic = ofCar.filter(w => !w.models.some(k => k.startsWith(kit.car + "|")));
+  const wires = uniq([...own.sort(byPrice), ...generic.sort(byPrice)]).slice(0, 3);
+  if (!frames.length) return `<p class="kit__hint">Рамку для этой машины подберём по телефону или в MAX.</p>`;
+  const title = kit.car + (kit.model ? " " + kit.model : "");
+  const parts = [p.price, frames[0].price, wires.length ? Math.min(...wires.map(w => w.price)) : 0, INSTALL_FROM];
+  const total = p.price ? parts.reduce((a, b) => a + b, 0) : 0;
+  return `
+    <h4>Рамка для ${escapeHtml(title)}</h4>
+    ${frames.slice(0, 5).map(kitRow).join("")}
+    ${frames.length > 5 ? `<button type="button" class="kit__all" data-kit-all>Все рамки для ${escapeHtml(title)} (${allFrames.length})</button>` : ""}
+    ${wires.length ? `<h4>Провода</h4>${wires.map(kitRow).join("")}` : ""}
+    <div class="kit__item kit__item--static"><span>Установка</span><b>от ${money(INSTALL_FROM)}</b></div>
+    ${total ? `<p class="kit__total">Всё вместе — примерно от <b>${money(total)}</b></p>` : ""}
+    <p class="kit__hint">Рамка и провода зависят от года и комплектации. Назовите машину — подтвердим точно. Рамки и провода — под заказ.</p>`;
+}
+function kitBlock(p) {
+  if (!KIT_CATS.includes(p.category) || hasOwnFrame(p)) return "";
+  if (state.car && KIT_CARS.includes(state.car)) { kit.car = state.car; kit.model = state.model; }
+  else if (p.car && KIT_CARS.includes(p.car) && kit.car !== p.car) {
+    kit.car = p.car;
+    kit.model = (p.models.find(k => k.startsWith(p.car + "|")) || "").split("|")[1] || "";
+  }
+  if (kit.model && !kitModels().includes(kit.model)) kit.model = ""; // модель есть только у проводов, рамок к ней нет
+  return `<section class="kit" data-kit="${p.id}">
+    <h3>Рамка и провода под вашу машину</h3>
+    <div class="kit__selects">
+      <select data-kit-car aria-label="Марка машины"><option value="">Марка</option>${KIT_CARS.map(c => `<option value="${escapeHtml(c)}"${kit.car === c ? " selected" : ""}>${escapeHtml(c)}</option>`).join("")}</select>
+      <select data-kit-model aria-label="Модель машины"${kit.car ? "" : " disabled"}>${kitModelOptions()}</select>
+    </div>
+    <div data-kit-result>${kitResult(p)}</div>
+  </section>`;
+}
+modalBody.addEventListener("change", e => {
+  const box = e.target.closest("[data-kit]");
+  if (!box) return;
+  if (e.target.matches("[data-kit-car]")) {
+    kit.car = e.target.value;
+    kit.model = "";
+    const sel = box.querySelector("[data-kit-model]");
+    sel.innerHTML = kitModelOptions();
+    sel.disabled = !kit.car;
+  } else if (e.target.matches("[data-kit-model]")) kit.model = e.target.value;
+  else return;
+  box.querySelector("[data-kit-result]").innerHTML = kitResult(ITEMS.find(x => x.id === Number(box.dataset.kit)));
+});
+modalBody.addEventListener("click", e => {
+  const open = e.target.closest("[data-open-id]");
+  if (open) { openProduct(Number(open.dataset.openId)); modal.scrollTop = 0; return; }
+  if (e.target.closest("[data-kit-all]")) {
+    Object.assign(state, { category: "Рамки и крепления", car: kit.car, model: kit.model, cond: "", query: "", shown: PAGE });
+    searchInput.value = "";
+    modal.close();
+    render();
+    catalogEl.scrollIntoView({ behavior: "smooth" });
+  }
+});
 
 // Варианты одной модели (экран, память) — у TEYES под заказ
 const plural = n => n % 10 === 1 && n % 100 !== 11 ? "" : n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 10 || n % 100 >= 20) ? "а" : "ов";
@@ -356,7 +490,18 @@ grid.addEventListener("keydown", e => {
 document.getElementById("modalClose").addEventListener("click", () => modal.close());
 modal.addEventListener("click", e => { if (e.target === modal) modal.close(); });
 
+// Пришли со страницы рамок или раздела (?razdel=ramki&marka=Toyota&model=Aqua) — сразу ставим фильтры
+// Порядок должен совпадать с CAT_SLUGS в заметки/seo_avtozvuk.js
+const CAT_SLUGS = ["android", "teyes", "car-heaven", "yaponskie", "pandora", "ramki", "provoda"];
+const params = new URLSearchParams(location.search);
+const fromSlug = CAT_SLUGS.indexOf(params.get("razdel"));
+if (fromSlug >= 0) state.category = CATEGORIES[fromSlug];
+if (CARS.includes(params.get("marka"))) {
+  state.car = params.get("marka");
+  state.model = params.get("model") || "";
+}
 render();
+if (fromSlug >= 0 || state.car) catalogEl.scrollIntoView();
 openFromLink();
 window.addEventListener("hashchange", openFromLink);
 
