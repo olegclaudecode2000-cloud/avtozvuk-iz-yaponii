@@ -15,6 +15,32 @@ if (MAX_LINK) {
   document.querySelectorAll("[data-max]").forEach(a => { a.href = MAX_LINK; a.hidden = false; });
 }
 
+// Открыть MAX и положить готовый текст в буфер. Окно открываем сразу, в момент нажатия:
+// айфон (Safari) не открывает окно, если сначала ждать копирования (12.11.2026).
+// Ответ: true — текст скопирован, false — нет (тогда покажем текст на странице).
+function openMaxWith(text) {
+  let copying;
+  try { copying = navigator.clipboard.writeText(text); } catch (err) { copying = Promise.reject(err); }
+  window.open(MAX_LINK, "_blank", "noopener");
+  return Promise.resolve(copying).then(() => true, () => false);
+}
+
+// «Назад» на телефоне закрывает окно товара, а не уводит с сайта (12.11.2026):
+// открыли окно — добавили шаг в историю, закрыли окно — убрали его
+function historyOpen(dlg, url) {
+  if (dlg.dataset.back) history.replaceState({ dlg: dlg.id }, "", url);
+  else { history.pushState({ dlg: dlg.id }, "", url); dlg.dataset.back = "1"; }
+}
+function historyClose(dlg) {
+  if (dlg.dataset.back) { delete dlg.dataset.back; history.back(); }
+  // Браузер сообщает о закрытии чуть позже: если уже открыто другое окно — его адрес не трогаем
+  else if (!document.querySelector("dialog[open]")) history.replaceState(null, "", location.pathname + location.search);
+}
+// Закрыть окно и сразу убрать его шаг из истории — не ждём события «close»: браузер присылает его с задержкой,
+// а в фоновой вкладке может не прислать вовсе. Событие «close» остаётся для закрытия клавишей Esc.
+function closeDialog(dlg) { if (dlg.open) dlg.close(); historyClose(dlg); }
+addEventListener("popstate", () => document.querySelectorAll("dialog[open]").forEach(d => { delete d.dataset.back; closeDialog(d); }));
+
 // Все товары: сначала подробные карточки с фото, потом остальное с Фарпоста
 // oem — официальное фото производителя: оно становится главным,
 // а фото из объявления (реальное состояние товара) идут следом при листании
@@ -250,10 +276,8 @@ countEl.addEventListener("click", async e => {
   if (e.target.closest("[data-ask-empty]")) {
     const text = `Здравствуйте! Ищу на сайте «Автозвук из Японии»: ${state.query.trim()}. Есть такое? Моя машина (марка, модель, год): `;
     const tip = document.getElementById("emptyTip");
-    try { await navigator.clipboard.writeText(text); tip.textContent = "Текст скопирован — вставьте его в чат MAX и отправьте."; }
-    catch { tip.textContent = "Напишите в MAX: " + text; }
+    tip.textContent = await openMaxWith(text) ? "Текст скопирован — вставьте его в чат MAX и отправьте." : "Напишите в MAX: " + text;
     tip.hidden = false;
-    window.open(MAX_LINK, "_blank", "noopener");
     return;
   }
   if (!e.target.closest("[data-reset]")) return;
@@ -349,7 +373,7 @@ function openProduct(id) {
       <button class="btn btn--ghost btn--wide modal__share" data-share>Поделиться ссылкой на товар</button>
       <p class="share__tip" id="shareTip" hidden></p>
     </div>`;
-  history.replaceState(null, "", "#t=" + linkKey(p));
+  historyOpen(modal, "#t=" + linkKey(p));
   if (!modal.open) modal.showModal();
   initGallery(modalBody);
 }
@@ -433,9 +457,10 @@ modalBody.addEventListener("click", e => {
   if (e.target.closest("[data-kit-all]")) {
     Object.assign(state, { category: "Рамки и крепления", car: kit.car, model: kit.model, cond: "", query: "", shown: PAGE });
     searchInput.value = "";
-    modal.close();
+    // После закрытия окна браузер возвращается на шаг назад и может вернуть прокрутку — едем к каталогу уже после этого
+    addEventListener("popstate", () => catalogEl.scrollIntoView({ behavior: "smooth" }), { once: true });
+    closeDialog(modal);
     render();
-    catalogEl.scrollIntoView({ behavior: "smooth" });
   }
 });
 
@@ -463,8 +488,8 @@ modalBody.addEventListener("click", async e => {
   try { await navigator.clipboard.writeText(url); shareTip("Ссылка скопирована — отправьте её в MAX или СМС."); }
   catch { shareTip(url); }
 });
-// Окно закрыли — убираем товар из адреса страницы
-modal.addEventListener("close", () => history.replaceState(null, "", location.pathname + location.search));
+// Окно закрыли — убираем товар из адреса страницы (и шаг из истории)
+modal.addEventListener("close", () => historyClose(modal));
 // Открыли сайт по ссылке на товар — сразу показываем его
 function openFromLink() {
   let key = "";
@@ -487,8 +512,8 @@ grid.addEventListener("keydown", e => {
   const c = e.target.closest(".card[data-id]");
   if (c && e.key === "Enter") openProduct(Number(c.dataset.id));
 });
-document.getElementById("modalClose").addEventListener("click", () => modal.close());
-modal.addEventListener("click", e => { if (e.target === modal) modal.close(); });
+document.getElementById("modalClose").addEventListener("click", () => closeDialog(modal));
+modal.addEventListener("click", e => { if (e.target === modal) closeDialog(modal); });
 
 // Пришли со страницы рамок или раздела (?razdel=ramki&marka=Toyota&model=Aqua) — сразу ставим фильтры
 // Порядок должен совпадать с CAT_SLUGS в заметки/seo_avtozvuk.js
