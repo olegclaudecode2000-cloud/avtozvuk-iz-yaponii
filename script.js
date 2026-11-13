@@ -53,7 +53,7 @@ const ITEMS = [
   ...(typeof TEYES === "undefined" ? [] : TEYES).map((p, i) => ({ ...p, id: 3000 + i })), // TEYES под заказ (teyes.js)
   ...(typeof CARHEAVEN === "undefined" ? [] : CARHEAVEN).map((p, i) => ({ ...p, id: 4000 + i })), // Car Heaven под заказ (carheaven.js)
   ...(typeof RAMKI === "undefined" ? [] : RAMKI).map((p, i) => ({ ...p, id: 5000 + i, name: cleanName(p.name) })), // рамки и провода под заказ (ramki.js)
-].map(withOem).map(tagCars); // марки и модели из названий — models.js
+].map(withOem).map(tagCars).map(prettyName); // марки, модели и аккуратные названия рамок — models.js
 ITEMS.splice(0, ITEMS.length, ...tidyDuplicates(ITEMS)); // повторы рамок в прайсе — models.js
 document.querySelectorAll("[data-count]").forEach(el => el.textContent = ITEMS.length);
 
@@ -171,6 +171,13 @@ const countEl = document.getElementById("catalogCount");
 const moreBtn = document.getElementById("moreBtn");
 const searchInput = document.getElementById("searchInput");
 
+// Год в запросе («рамка фит 2008») подходит и к диапазону в названии: «2007-2013», «2008+» (П5)
+const yearRanges = p => p._years || (p._years = [
+  ...[...p.name.matchAll(/((?:19|20)\d\d)\s*[-–—]\s*((?:19|20)\d\d)/g)].map(m => [+m[1], +m[2]]),
+  ...[...p.name.matchAll(/((?:19|20)\d\d)\s*\+/g)].map(m => [+m[1], 2100]),
+]);
+const inYears = (p, w) => /^(19|20)\d\d$/.test(w) && yearRanges(p).some(([a, b]) => +w >= a && +w <= b);
+
 function filtered(withFilters = true) {
   const terms = searchTerms(state.query); // русские названия машин и брендов — ru-search.js
   const list = ITEMS.filter(p => {
@@ -179,12 +186,12 @@ function filtered(withFilters = true) {
     if (withFilters && state.model && !hasModel(p, state.car, state.model)) return false;
     if (withFilters && state.cond && condOf(p) !== state.cond) return false;
     const text = [p.name, p.category, p.cars.join(" "), p.condition || "", p.description || "", p.code || "", ...(p.variants || []).map(v => v.name)].join(" ").toLowerCase().replace(/ё/g, "е");
-    return terms.every(alts => alts.some(w => text.includes(w)));
+    return terms.every(alts => alts.some(w => text.includes(w) || inYears(p, w)));
   });
   // При поиске сначала то, где слова есть в названии: иначе «провода тойота» начнётся с рамок,
   // у которых провода упомянуты в описании
-  const hit = t => terms.every(alts => alts.some(w => t.includes(w)));
-  const score = p => { if (!terms.length) return 0; const n = p.name.toLowerCase().replace(/ё/g, "е"); return hit(n) ? 2 : hit(n + " " + p.category.toLowerCase()) ? 1 : 0; };
+  const hit = (t, p) => terms.every(alts => alts.some(w => t.includes(w) || inYears(p, w)));
+  const score = p => { if (!terms.length) return 0; const n = p.name.toLowerCase().replace(/ё/g, "е"); return hit(n, p) ? 2 : hit(n + " " + p.category.toLowerCase(), p) ? 1 : 0; };
   // В разделе рамок сначала новые (под заказ), потом папины в наличии (папа, 07.11.2026)
   // и среди новых — сначала японские марки (папа, 07.11.2026)
   const rank = state.category === "Рамки и крепления"

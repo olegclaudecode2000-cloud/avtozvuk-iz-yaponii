@@ -64,6 +64,41 @@ const MODEL_TESTS = Object.fromEntries(Object.entries(CAR_INDEX.models).map(([ma
   : [m, new RegExp("(^|[^A-Z0-9])" + m.toUpperCase().replace(/[.*+?^${}()|[\]\\]/g, "\\$&").replace(/[-\s]/g, "[-\\s]?") + "(?![A-Z])")])]));
 const CAR_FROM_NAME = ["Рамки и крепления", "Провода и аксессуары"];
 
+// Названия рамок и проводов поставщика — к одному виду (проверка 12.11.2026, П7):
+// «Рамка 2003-2005 NISSAN X-TRAIL (9INCH, RHD)» -> «Рамка Nissan X-Trail 2003-2005 (9″, правый руль)»
+const MAKE_UP = Object.fromEntries(Object.keys(CAR_INDEX.makes).filter(m => /^[A-Za-z -]+$/.test(m)).map(m => [m.toUpperCase(), m]));
+const NAME_WORDS = [
+  [/(\d+(?:\.\d+)?)\s*INCH(?:ES)?/gi, (m, n) => n.replace(".", ",") + "″"], [/\bUV BLACK\b|\bBLACK\b/gi, "чёрная"],
+  [/\bSILVER\b/gi, "серебристая"], [/\b(?:DRAK|DARK) GR[AE]Y\b/gi, "тёмно-серая"], [/\bGR[AE]Y\b/gi, "серая"],
+  [/\bLHD\b/g, "левый руль"], [/\bRHD\b/g, "правый руль"], [/\bMANUAL AC\b/gi, "кондиционер"], [/\bAUTO AC\b/gi, "климат-контроль"],
+  [/\bVERTICAL SCREEN\b/gi, "вертикальный экран"], [/\bLOW-END\b/gi, "базовая комплектация"],
+];
+function prettyName(p) {
+  if (!CAR_FROM_NAME.includes(p.category) || !p.key) return p;  // только рамки и провода из прайса поставщика
+  let s = p.name.replace(/^Рамка SUITABLE FOR\s+/i, "Рамка ");
+  if ((s.match(/\(/g) || []).length > (s.match(/\)/g) || []).length) s += ")";  // «(9INCH, UV BLACK» без скобки
+  s = s.replace(/\(([^)]*)\)/g, (m, t) => {
+    const r = NAME_WORDS.reduce((a, [re, to]) => a.replace(re, to), t).replace(/\bAUTO\s*$/i, "климат-контроль").replace(/^[\s,]+|[\s,]+$/g, "");
+    return r ? "(" + r + ")" : "";
+  });
+  // Год в начале — в конец (перед скобками), если других годов в названии нет
+  const lead = s.match(/^(Рамка|Комплект проводов[^A-Za-z]*?)\s+((?:19|20)\d\d(?:\s*[-–]\s*(?:19|20)\d\d)?\+?)\s+(.+)$/);
+  if (lead && !/(?:19|20)\d\d/.test(lead[3])) {
+    const i = lead[3].indexOf("(");
+    s = i > 0 ? `${lead[1]} ${lead[3].slice(0, i).trim()} ${lead[2]} ${lead[3].slice(i)}` : `${lead[1]} ${lead[3]} ${lead[2]}`;
+  }
+  // Марки и модели заглавными — как принято: TOYOTA -> Toyota, X-TRAIL -> X-Trail, CRV -> CR-V
+  s = s.replace(/\b[A-Z][A-Z-]+\b/g, w => MAKE_UP[w] || w);
+  p.cars.forEach(c => (CAR_INDEX.models[c] || []).filter(m => typeof m === "string").forEach(m => {
+    const re = new RegExp("(^|[^A-Za-z0-9])(" + m.toUpperCase().replace(/[.*+?^${}()|[\]\\]/g, "\\$&").replace(/[-\s]/g, "[-\\s]?") + ")(?![A-Za-z])");
+    s = s.replace(re, (all, pre, found) => found === found.toUpperCase() && /[A-Z]/.test(found) ? pre + m : all);
+  }));
+  // Остальные слова ЗАГЛАВНЫМИ (от 4 букв, без цифр): TOUAREG -> Touareg; сокращения вроде CANBUS, ADAS не трогаем
+  s = s.replace(/\b[A-Z]{4,}\b/g, w => /^(CANBUS|ADAS|NAVI|AHD|DVD|USB|MFB|MFBC|MFA|MFC|CAN)$/.test(w) ? w : w[0] + w.slice(1).toLowerCase());
+  p.name = s.replace(/\s{2,}/g, " ").trim();
+  return p;
+}
+
 // Одинаковые рамки и провода в прайсе (проверка 12.11.2026, П3): тот же код — показываем один раз;
 // разные коды — дописываем к названию, чем отличаются (размер экрана, иначе код)
 function tidyDuplicates(list) {

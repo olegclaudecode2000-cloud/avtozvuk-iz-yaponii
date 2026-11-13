@@ -530,3 +530,25 @@ body {
 /* Длинные надписи на кнопках переносятся и не раздвигают узкий экран */
 .catalog__count .btn, .seo-more .btn, .seo-cta .btn { max-width: 100%; white-space: normal; text-align: center; }
 .ask__tip { word-break: normal; overflow-wrap: anywhere; }
+
+/* Телефон: до первого товара короче (проверка 12.11.2026, П11) */
+@media (max-width: 520px) {
+  .hero__inner { padding-block: 26px 22px; }
+  .hero__sub { font-size: 1rem; margin-bottom: 16px; }
+  .hero__actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .hero__actions .btn--big { padding: 12px 8px; font-size: .95rem; }
+  .facts { flex-wrap: nowrap; overflow-x: auto; gap: 20px; margin-top: 18px; padding-bottom: 4px; scrollbar-width: none; }
+  .facts::-webkit-scrollbar { display: none; }
+  .facts li { flex: none; }
+  .directions { padding-block: 18px 2px; }
+  .directions__grid { grid-template-columns: 1fr 1fr; gap: 8px; }
+  .directions__grid > :nth-child(1) { grid-column: span 2; }
+  .direction, .directions__grid > :nth-child(2) { aspect-ratio: 16 / 9; }
+  .directions__grid > :nth-child(1) { aspect-ratio: 16 / 7; }
+  .direction__body { padding: 24px 10px 8px; }
+  .direction__title { font-size: .95rem; line-height: 1.2; }
+  .direction__text { display: none; }
+  #carChips, #condChips, #modelChips { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; padding-bottom: 4px; }
+  #carChips::-webkit-scrollbar, #condChips::-webkit-scrollbar { display: none; }
+  #carChips > *, #condChips > *, #modelChips > * { flex: none; }
+}
