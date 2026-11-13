@@ -154,15 +154,6 @@
   <url><loc>https://olegclaudecode2000-cloud.github.io/avtozvuk-iz-yaponii/ramki/ford/ranger/</loc></url>
   <url><loc>https://olegclaudecode2000-cloud.github.io/avtozvuk-iz-yaponii/ramki/ford/s-max/</loc></url>
   <url><loc>https://olegclaudecode2000-cloud.github.io/avtozvuk-iz-yaponii/ramki/ford/transit/</loc></url>
-  <url><loc>https://olegclaudecode2000-cloud.github.io/avtozvuk-iz-yaponii/ramki/volkswagen/</loc></url>
-  <url><loc>https://olegclaudecode2000-cloud.github.io/avtozvuk-iz-yaponii/ramki/volkswagen/crafter/</loc></url>
-  <url><loc>https://olegclaudecode2000-cloud.github.io/avtozvuk-iz-yaponii/ramki/volkswagen/golf/</loc></url>
-  <url><loc>https://olegclaudecode2000-cloud.github.io/avtozvuk-iz-yaponii/ramki/volkswagen/jetta/</loc></url>
-  <url><loc>https://olegclaudecode2000-cloud.github.io/avtozvuk-iz-yaponii/ramki/volkswagen/passat/</loc></url>
-  <url><loc>https://olegclaudecode2000-cloud.github.io/avtozvuk-iz-yaponii/ramki/volkswagen/polo/</loc></url>
-  <url><loc>https://olegclaudecode2000-cloud.github.io/avtozvuk-iz-yaponii/ramki/volkswagen/tiguan/</loc></url>
-  <url><loc>https://olegclaudecode2000-cloud.github.io/avtozvuk-iz-yaponii/ramki/volkswagen/touareg/</loc></url>
-  <url><loc>https://olegclaudecode2000-cloud.github.io/avtozvuk-iz-yaponii/ramki/volkswagen/touran/</loc></url>
   <url><loc>https://olegclaudecode2000-cloud.github.io/avtozvuk-iz-yaponii/ramki/suzuki/</loc></url>
   <url><loc>https://olegclaudecode2000-cloud.github.io/avtozvuk-iz-yaponii/ramki/suzuki/alto/</loc></url>
   <url><loc>https://olegclaudecode2000-cloud.github.io/avtozvuk-iz-yaponii/ramki/suzuki/baleno/</loc></url>
@@ -176,6 +167,15 @@
   <url><loc>https://olegclaudecode2000-cloud.github.io/avtozvuk-iz-yaponii/ramki/suzuki/sx4/</loc></url>
   <url><loc>https://olegclaudecode2000-cloud.github.io/avtozvuk-iz-yaponii/ramki/suzuki/vitara/</loc></url>
   <url><loc>https://olegclaudecode2000-cloud.github.io/avtozvuk-iz-yaponii/ramki/suzuki/wagon-r/</loc></url>
+  <url><loc>https://olegclaudecode2000-cloud.github.io/avtozvuk-iz-yaponii/ramki/volkswagen/</loc></url>
+  <url><loc>https://olegclaudecode2000-cloud.github.io/avtozvuk-iz-yaponii/ramki/volkswagen/crafter/</loc></url>
+  <url><loc>https://olegclaudecode2000-cloud.github.io/avtozvuk-iz-yaponii/ramki/volkswagen/golf/</loc></url>
+  <url><loc>https://olegclaudecode2000-cloud.github.io/avtozvuk-iz-yaponii/ramki/volkswagen/jetta/</loc></url>
+  <url><loc>https://olegclaudecode2000-cloud.github.io/avtozvuk-iz-yaponii/ramki/volkswagen/passat/</loc></url>
+  <url><loc>https://olegclaudecode2000-cloud.github.io/avtozvuk-iz-yaponii/ramki/volkswagen/polo/</loc></url>
+  <url><loc>https://olegclaudecode2000-cloud.github.io/avtozvuk-iz-yaponii/ramki/volkswagen/tiguan/</loc></url>
+  <url><loc>https://olegclaudecode2000-cloud.github.io/avtozvuk-iz-yaponii/ramki/volkswagen/touareg/</loc></url>
+  <url><loc>https://olegclaudecode2000-cloud.github.io/avtozvuk-iz-yaponii/ramki/volkswagen/touran/</loc></url>
   <url><loc>https://olegclaudecode2000-cloud.github.io/avtozvuk-iz-yaponii/ramki/lexus/</loc></url>
   <url><loc>https://olegclaudecode2000-cloud.github.io/avtozvuk-iz-yaponii/ramki/lexus/es/</loc></url>
   <url><loc>https://olegclaudecode2000-cloud.github.io/avtozvuk-iz-yaponii/ramki/lexus/gx/</loc></url>
@@ -314,8 +314,8 @@
   <url><loc>https://olegclaudecode2000-cloud.github.io/avtozvuk-iz-yaponii/magnitoly/hyundai/</loc></url>
   <url><loc>https://olegclaudecode2000-cloud.github.io/avtozvuk-iz-yaponii/magnitoly/kia/</loc></url>
   <url><loc>https://olegclaudecode2000-cloud.github.io/avtozvuk-iz-yaponii/magnitoly/ford/</loc></url>
-  <url><loc>https://olegclaudecode2000-cloud.github.io/avtozvuk-iz-yaponii/magnitoly/volkswagen/</loc></url>
   <url><loc>https://olegclaudecode2000-cloud.github.io/avtozvuk-iz-yaponii/magnitoly/suzuki/</loc></url>
+  <url><loc>https://olegclaudecode2000-cloud.github.io/avtozvuk-iz-yaponii/magnitoly/volkswagen/</loc></url>
   <url><loc>https://olegclaudecode2000-cloud.github.io/avtozvuk-iz-yaponii/magnitoly/lexus/</loc></url>
   <url><loc>https://olegclaudecode2000-cloud.github.io/avtozvuk-iz-yaponii/magnitoly/mazda/</loc></url>
   <url><loc>https://olegclaudecode2000-cloud.github.io/avtozvuk-iz-yaponii/magnitoly/subaru/</loc></url>

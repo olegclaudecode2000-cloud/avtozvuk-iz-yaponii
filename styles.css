@@ -404,7 +404,7 @@ body {
   .call-fab { display: grid; }
   .hero { background:
     linear-gradient(180deg, rgba(27,31,39,.5) 0%, rgba(27,31,39,.9) 70%),
-    url("images/hero.jpg") center / cover no-repeat; }
+    url("images/hero-960.jpg") center / cover no-repeat; }
 }
 @media (max-width: 520px) {
   .hero__inner { padding-block: 40px 36px; }
@@ -529,3 +529,4 @@ body {
 
 /* Длинные надписи на кнопках переносятся и не раздвигают узкий экран */
 .catalog__count .btn, .seo-more .btn, .seo-cta .btn { max-width: 100%; white-space: normal; text-align: center; }
+.ask__tip { word-break: normal; overflow-wrap: anywhere; }

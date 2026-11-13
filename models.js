@@ -64,6 +64,30 @@ const MODEL_TESTS = Object.fromEntries(Object.entries(CAR_INDEX.models).map(([ma
   : [m, new RegExp("(^|[^A-Z0-9])" + m.toUpperCase().replace(/[.*+?^${}()|[\]\\]/g, "\\$&").replace(/[-\s]/g, "[-\\s]?") + "(?![A-Z])")])]));
 const CAR_FROM_NAME = ["Рамки и крепления", "Провода и аксессуары"];
 
+// Одинаковые рамки и провода в прайсе (проверка 12.11.2026, П3): тот же код — показываем один раз;
+// разные коды — дописываем к названию, чем отличаются (размер экрана, иначе код)
+function tidyDuplicates(list) {
+  const groups = new Map();
+  list.forEach(p => {
+    if (!CAR_FROM_NAME.includes(p.category)) return;
+    const k = p.name + "|" + p.price;
+    if (!groups.has(k)) groups.set(k, []);
+    groups.get(k).push(p);
+  });
+  const drop = new Set();
+  groups.forEach(g => {
+    if (g.length < 2) return;
+    const seen = new Set();
+    g.forEach(p => { const c = (p.code || "").trim(); if (seen.has(c)) drop.add(p); else seen.add(c); });
+    const rest = g.filter(p => !drop.has(p));
+    if (rest.length < 2) return;
+    const screens = rest.map(p => ((p.specs || []).find(s => s[0] === "Под экран") || [])[1] || "");
+    const byScreen = screens.every(Boolean) && new Set(screens).size === rest.length;
+    rest.forEach((p, i) => { p.name += byScreen ? ` (под экран ${screens[i]})` : p.code ? ` (код ${p.code})` : ""; });
+  });
+  return list.filter(p => !drop.has(p));
+}
+
 // Дописать товару марки (cars) и модели (models, вида «Toyota|Aqua»)
 function tagCars(p) {
   const N = p.name.toUpperCase();

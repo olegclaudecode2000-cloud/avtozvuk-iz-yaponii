@@ -54,6 +54,7 @@ const ITEMS = [
   ...(typeof CARHEAVEN === "undefined" ? [] : CARHEAVEN).map((p, i) => ({ ...p, id: 4000 + i })), // Car Heaven под заказ (carheaven.js)
   ...(typeof RAMKI === "undefined" ? [] : RAMKI).map((p, i) => ({ ...p, id: 5000 + i, name: cleanName(p.name) })), // рамки и провода под заказ (ramki.js)
 ].map(withOem).map(tagCars); // марки и модели из названий — models.js
+ITEMS.splice(0, ITEMS.length, ...tidyDuplicates(ITEMS)); // повторы рамок в прайсе — models.js
 document.querySelectorAll("[data-count]").forEach(el => el.textContent = ITEMS.length);
 
 // Рисунки вместо фото, пока своих фото нет
@@ -367,7 +368,8 @@ function openProduct(id) {
       ${variantsBlock(p)}
       <div class="modal__price">${priceText(p)}</div>
       <a class="btn btn--accent btn--big btn--wide" href="${PHONE_LINK}">Позвонить: ${PHONE_TEXT}</a>
-      ${MAX_LINK ? `<a class="btn btn--max btn--big btn--wide modal__max" href="${escapeHtml(MAX_LINK)}" target="_blank" rel="noopener">Написать в MAX</a>` : ""}
+      ${MAX_LINK ? `<button type="button" class="btn btn--max btn--big btn--wide modal__max" data-ask-max="${p.id}">Написать в MAX</button>
+      <p class="share__tip ask__tip" id="askTip" hidden></p>` : ""}
       ${kitBlock(p)}
       ${p.farpost ? `<a class="btn btn--ghost btn--wide modal__farpost" href="${escapeHtml(p.farpost)}" target="_blank" rel="noopener">Фото и подробности на Фарпосте</a>` : ""}
       <button class="btn btn--ghost btn--wide modal__share" data-share>Поделиться ссылкой на товар</button>
@@ -479,6 +481,16 @@ function variantsBlock(p) {
 // Своя ссылка у каждого товара: номер объявления на Фарпосте (не меняется), у TEYES — своё имя, иначе номер на сайте
 const linkKey = p => p.key || (p.farpost && (p.farpost.match(/-(\d+)\.html/) || [])[1]) || "p" + p.id;
 const shareTip = text => { const t = document.getElementById("shareTip"); t.textContent = text; t.hidden = false; };
+// «Написать в MAX» из окна товара: сразу с названием, ценой и ссылкой — папе не надо переспрашивать (П9)
+modalBody.addEventListener("click", async e => {
+  const b = e.target.closest("[data-ask-max]");
+  if (!b) return;
+  const p = ITEMS.find(x => x.id === Number(b.dataset.askMax));
+  const text = `Здравствуйте! Интересует: ${p.name} — ${priceText(p)}. С сайта «Автозвук из Японии»: ${location.href}\nМоя машина (марка, модель, год): `;
+  const tip = document.getElementById("askTip");
+  tip.textContent = await openMaxWith(text) ? "Текст про этот товар скопирован — вставьте его в чат MAX." : "Напишите в MAX: " + text;
+  tip.hidden = false;
+});
 modalBody.addEventListener("click", async e => {
   if (!e.target.closest("[data-share]")) return;
   const url = location.href, title = modalBody.querySelector("h2").textContent;
