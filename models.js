@@ -73,6 +73,13 @@ const NAME_WORDS = [
   [/\bLHD\b/g, "левый руль"], [/\bRHD\b/g, "правый руль"], [/\bMANUAL AC\b/gi, "кондиционер"], [/\bAUTO AC\b/gi, "климат-контроль"],
   [/\bVERTICAL SCREEN\b/gi, "вертикальный экран"], [/\bLOW-END\b/gi, "базовая комплектация"],
 ];
+const OUT_WORDS = [
+  [/(\d+(?:[.,]\d+)?)\s*inch(?:es)?\b/gi, (m, n) => n.replace(".", ",") + "″"], [/\buniversal\b/gi, "универсальная"],
+  [/\bblack\b/gi, "чёрная"], [/\bsilver\b/gi, "серебристая"], [/\bRHD\b/g, "правый руль"], [/\bLHD\b/g, "левый руль"],
+  [/\bscreen\b/gi, "экран"], [/((?:19|20)\d\d\+)(?=[A-Za-z])/g, "$1 "], [/\bHigh[- ]?end\b/gi, "топ-комплектация"],
+  [/\bHazard Warning (?:Light )?Switch\b/gi, "кнопка аварийной сигнализации"], [/\bSpeaker Mat for\b/gi, "коврик под динамик для"],
+  [/\bSedan\b/g, "седан"],
+];
 function prettyName(p) {
   if (!CAR_FROM_NAME.includes(p.category) || !p.key) return p;  // только рамки и провода из прайса поставщика
   let s = p.name.replace(/^Рамка SUITABLE FOR\s+/i, "Рамка ");
@@ -81,12 +88,23 @@ function prettyName(p) {
     const r = NAME_WORDS.reduce((a, [re, to]) => a.replace(re, to), t).replace(/\bAUTO\s*$/i, "климат-контроль").replace(/^[\s,]+|[\s,]+$/g, "");
     return r ? "(" + r + ")" : "";
   });
-  // Год в начале — в конец (перед скобками), если других годов в названии нет
-  const lead = s.match(/^(Рамка|Комплект проводов[^A-Za-z]*?)\s+((?:19|20)\d\d(?:\s*[-–]\s*(?:19|20)\d\d)?\+?)\s+(.+)$/);
-  if (lead && !/(?:19|20)\d\d/.test(lead[3])) {
-    const i = lead[3].indexOf("(");
-    s = i > 0 ? `${lead[1]} ${lead[3].slice(0, i).trim()} ${lead[2]} ${lead[3].slice(i)}` : `${lead[1]} ${lead[3]} ${lead[2]}`;
+  // Год в начале — в конец (перед скобками). Если машин несколько через «/», то в каждой части отдельно:
+  // «Рамка 2020+ Lada Niva Travel/ 2009-2020 Chevrolet Niva» -> «Рамка Lada Niva Travel 2020+ / Chevrolet Niva 2009-2020» (Н13)
+  const moveYear = seg => {
+    const m = seg.match(/^((?:19|20)\d\d(?:\s*[-–]\s*(?:19|20)\d\d)?\+?)\s+(.+)$/);
+    if (!m || /(?:19|20)\d\d/.test(m[2])) return seg;
+    const i = m[2].indexOf("(");
+    return i > 0 ? `${m[2].slice(0, i).trim()} ${m[1]} ${m[2].slice(i)}` : `${m[2]} ${m[1]}`;
+  };
+  const lead = s.match(/^(Рамка|Комплект проводов[^A-Za-z]*?)\s+(.+)$/);
+  if (lead && /^(?:19|20)\d\d/.test(lead[2])) {
+    const parts = lead[2].split(/\s*\/\s*/), moved = parts.map(moveYear);
+    s = `${lead[1]} ` + (moved.some((x, i) => x !== parts[i]) && parts.length > 1 ? moved.join(" / ") : moveYear(lead[2]));
   }
+  // Английские слова и дюймы вне скобок (Н13): «10.1INCH» -> «10,1″», «Black» -> «чёрная», «10″ TO 7″» -> «переходник с 10″ на 7″»
+  s = OUT_WORDS.reduce((a, [re, to]) => a.replace(re, to), s)
+    .replace(/^Рамка ((?:\d+(?:,\d+)?″|\dDIN)(?:\s*\/\s*\d+(?:,\d+)?″)?)\s+to\s+(\d+(?:,\d+)?″)/i, "Рамка-переходник с $1 на $2")
+    .replace(/\s+,\s*/g, ", ");
   // Марки и модели заглавными — как принято: TOYOTA -> Toyota, X-TRAIL -> X-Trail, CRV -> CR-V
   s = s.replace(/\b[A-Z][A-Z-]+\b/g, w => MAKE_UP[w] || w);
   p.cars.forEach(c => (CAR_INDEX.models[c] || []).filter(m => typeof m === "string").forEach(m => {
@@ -99,26 +117,27 @@ function prettyName(p) {
   return p;
 }
 
-// Одинаковые рамки и провода в прайсе (проверка 12.11.2026, П3): тот же код — показываем один раз;
-// разные коды — дописываем к названию, чем отличаются (размер экрана, иначе код)
+// Одинаковые рамки и провода в прайсе (проверка 12.11.2026, П3; 14.11.2026, Н11): тот же код — показываем один раз
+// (самый дешёвый); разные коды — дописываем к названию, чем отличаются (размер экрана, иначе код), даже если цены разные.
+// Только товары из прайса поставщика (у них есть key) — папины б/у с Фарпоста это разные экземпляры, их не трогаем.
 function tidyDuplicates(list) {
   const groups = new Map();
   list.forEach(p => {
-    if (!CAR_FROM_NAME.includes(p.category)) return;
-    const k = p.name + "|" + p.price;
-    if (!groups.has(k)) groups.set(k, []);
-    groups.get(k).push(p);
+    if (!CAR_FROM_NAME.includes(p.category) || !p.key) return;
+    if (!groups.has(p.name)) groups.set(p.name, []);
+    groups.get(p.name).push(p);
   });
   const drop = new Set();
   groups.forEach(g => {
     if (g.length < 2) return;
     const seen = new Set();
-    g.forEach(p => { const c = (p.code || "").trim(); if (seen.has(c)) drop.add(p); else seen.add(c); });
+    [...g].sort((a, b) => a.price - b.price).forEach(p => { const c = (p.code || "").trim(); if (seen.has(c)) drop.add(p); else seen.add(c); });
     const rest = g.filter(p => !drop.has(p));
     if (rest.length < 2) return;
     const screens = rest.map(p => ((p.specs || []).find(s => s[0] === "Под экран") || [])[1] || "");
     const byScreen = screens.every(Boolean) && new Set(screens).size === rest.length;
-    rest.forEach((p, i) => { p.name += byScreen ? ` (под экран ${screens[i]})` : p.code ? ` (код ${p.code})` : ""; });
+    const code = p => (p.code || "").replace(/[　-鿿＀-￯]+/g, "").replace(/\s+\/\s*$/, "").trim();
+    rest.forEach((p, i) => { p.name += byScreen ? ` (под экран ${screens[i]})` : code(p) ? ` (код ${code(p)})` : ""; });
   });
   return list.filter(p => !drop.has(p));
 }

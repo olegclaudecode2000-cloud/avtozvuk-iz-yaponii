@@ -27,8 +27,10 @@ function openMaxWith(text) {
 
 // «Назад» на телефоне закрывает окно товара, а не уводит с сайта (12.11.2026):
 // открыли окно — добавили шаг в историю, закрыли окно — убрали его
+// Товар открыт по ссылке (#t=… уже в адресе) — шаг истории не добавляем, при закрытии просто чистим адрес (Н4)
+let openedByLink = false;
 function historyOpen(dlg, url) {
-  if (dlg.dataset.back) history.replaceState({ dlg: dlg.id }, "", url);
+  if (dlg.dataset.back || openedByLink) history.replaceState({ dlg: dlg.id }, "", url);
   else { history.pushState({ dlg: dlg.id }, "", url); dlg.dataset.back = "1"; }
 }
 function historyClose(dlg) {
@@ -185,7 +187,10 @@ function filtered(withFilters = true) {
     if (withFilters && state.car && !hasCar(p, state.car)) return false;
     if (withFilters && state.model && !hasModel(p, state.car, state.model)) return false;
     if (withFilters && state.cond && condOf(p) !== state.cond) return false;
-    const text = [p.name, p.category, p.cars.join(" "), p.condition || "", p.description || "", p.code || "", ...(p.variants || []).map(v => v.name)].join(" ").toLowerCase().replace(/ё/g, "е");
+    // У рамок и проводов из прайса описание одинаковое («…для установки Android-магнитолы…») — в поиске его не учитываем,
+    // иначе «магнитола» находила все 1 540 товаров (Н12)
+    const desc = p.key && CAR_FROM_NAME.includes(p.category) ? "" : p.description || "";
+    const text = [p.name, p.category, p.cars.join(" "), p.condition || "", desc, p.code || "", ...(p.variants || []).map(v => v.name)].join(" ").toLowerCase().replace(/ё/g, "е");
     return terms.every(alts => alts.some(w => text.includes(w) || inYears(p, w)));
   });
   // При поиске сначала то, где слова есть в названии: иначе «провода тойота» начнётся с рамок,
@@ -514,7 +519,7 @@ function openFromLink() {
   let key = "";
   try { key = decodeURIComponent((location.hash.match(/^#t=(.+)/) || [])[1] || ""); } catch { key = ""; } // кривая ссылка — просто не открываем товар
   const p = key && ITEMS.find(x => linkKey(x) === key);
-  if (p) openProduct(p.id);
+  if (p) { openedByLink = !modal.open; openProduct(p.id); openedByLink = false; }
 }
 
 grid.addEventListener("click", e => {
