@@ -153,6 +153,41 @@ directions.addEventListener("click", e => {
 
 // Каталог: раздел, марка машины, поиск
 const PAGE = 24;
+// Студийные фото: TEYES, Car Heaven и официальные фото японских магнитол
+const PRETTY_PHOTO = /^images\/(teyes|ch|oem)\//;
+
+// Витрина без поиска (папа и Олег, 15.11.2026): сначала магнитолы с красивыми фото, ДЕШЁВЫЕ вперёд
+// (особенно Car Heaven из нового прайса), и в каждой шестёрке — одна среднего уровня и одна японская:
+//   дешёвая, дешёвая, средняя, дешёвая, японская, дешёвая, …
+// Дешёвые — новые до 15 000 ₽ по возрастанию цены (при равной цене Car Heaven первым); средние — 15 000–30 000 ₽,
+// TEYES и Car Heaven по очереди (TEYES первой); штатные под одну марку (Touareg, Skoda/VW) — не в витрине; японские — б/у с официальным фото, по возрастанию цены.
+// Дальше остальные товары с красивыми фото по цене, потом всё прочее как было. Возвращает Map: товар -> место.
+const CHEAP_MAX = 15000, MID_MAX = 30000;
+const SHOW_PATTERN = ["cheap", "cheap", "mid", "cheap", "jp", "cheap"];
+function showcase(list) {
+  const isHead = p => p.category === "Японские магнитолы" || !!p.memo;  // у магнитол есть подсказка про память, у аксессуаров нет
+  const niche = p => /Touareg|Skoda|Volkswagen/.test(p.name);  // штатные под одну марку — в витрину не ставим
+  const pool = list.filter(p => PRETTY_PHOTO.test(p.image || "") && isHead(p) && !niche(p));
+  const byPrice = (a, b) => a.price - b.price || (b.category === "Car Heaven под заказ") - (a.category === "Car Heaven под заказ");
+  const jp = pool.filter(p => p.category === "Японские магнитолы").sort(byPrice);
+  const fresh = pool.filter(p => p.category !== "Японские магнитолы");
+  const cheap = fresh.filter(p => p.price < CHEAP_MAX).sort(byPrice);
+  const midAll = fresh.filter(p => p.price >= CHEAP_MAX && p.price <= MID_MAX).sort(byPrice);
+  const mid = [];  // TEYES и Car Heaven по очереди
+  const midT = midAll.filter(p => p.category !== "Car Heaven под заказ"), midC = midAll.filter(p => p.category === "Car Heaven под заказ");
+  while (midT.length || midC.length) { if (midT.length) mid.push(midT.shift()); if (midC.length) mid.push(midC.shift()); }
+  const pools = { cheap, mid, jp }, out = [];
+  for (let i = 0; cheap.length || mid.length || jp.length; i++) {
+    const want = SHOW_PATTERN[i % SHOW_PATTERN.length];
+    const from = pools[want].length ? pools[want] : cheap.length ? cheap : mid.length ? mid : jp;
+    // одинаковое фото не ставим рядом (в пределах трёх последних карточек) — берём следующий по цене
+    const near = out.slice(-3).map(p => p.image);
+    const k = Math.max(0, from.findIndex(p => !near.includes(p.image)));
+    out.push(from.splice(k, 1)[0]);
+  }
+  const rest = list.filter(p => PRETTY_PHOTO.test(p.image || "") && !out.includes(p)).sort(byPrice);
+  return new Map([...out, ...rest].map((p, i) => [p, i]));
+}
 const state = { category: "", car: "", model: "", cond: "", query: "", shown: PAGE };
 // Состояние товара: новый или б/у (из объявления на Фарпосте)
 const condOf = p => /б\/у/i.test(p.condition || "") ? "used" : /^нов/i.test(p.condition || "") ? "new" : "";
@@ -202,7 +237,11 @@ function filtered(withFilters = true) {
   const rank = state.category === "Рамки и крепления"
     ? p => p.order ? (JP_FIRST.indexOf(p.car) + 1 || JP_FIRST.length + 1) : JP_FIRST.length + 2
     : () => 0;
-  return list.map((p, i) => [p, i, score(p), rank(p)]).sort((a, b) => b[2] - a[2] || a[3] - b[3] || a[1] - b[1]).map(x => x[0]);
+  // Без поиска — витрина (в рамках своё правило выше)
+  const pretty = !terms.length && state.category !== "Рамки и крепления" ? showcase(list) : new Map();
+  const pr = p => pretty.get(p) ?? Infinity;
+  return list.map((p, i) => [p, i, score(p), rank(p), pr(p)])
+    .sort((a, b) => b[2] - a[2] || a[3] - b[3] || (a[4] === b[4] ? 0 : a[4] < b[4] ? -1 : 1) || a[1] - b[1]).map(x => x[0]);
 }
 
 function card(p) {
