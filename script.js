@@ -215,10 +215,20 @@ const yearRanges = p => p._years || (p._years = [
 ]);
 const inYears = (p, w) => /^(19|20)\d\d$/.test(w) && yearRanges(p).some(([a, b]) => +w >= a && +w <= b);
 
+// В «Android-магнитолах» — все Android, кроме TEYES (у них своя плашка): папины в наличии + Car Heaven под заказ (без камеры),
+// сначала с фото, от дешёвых к дорогим (папа, 15.11.2026: «чаще берут дешёвые, типа T100»)
+const isChHead = p => p.category === "Car Heaven под заказ" && !/^Камера/.test(p.name); // всё Android от Car Heaven, кроме камеры
+const inCategory = (p, c) => p.category === c || (c === "Android-магнитолы" && isChHead(p));
+function androidOrder(list) {
+  const byPrice = (a, b) => (a.price || 1e9) - (b.price || 1e9);
+  const out = [...list.filter(p => p.image).sort(byPrice), ...list.filter(p => !p.image).sort(byPrice)];
+  return new Map(out.map((p, i) => [p, i]));
+}
+
 function filtered(withFilters = true) {
   const terms = searchTerms(state.query); // русские названия машин и брендов — ru-search.js
   const list = ITEMS.filter(p => {
-    if (withFilters && state.category && p.category !== state.category) return false;
+    if (withFilters && state.category && !inCategory(p, state.category)) return false;
     if (withFilters && state.car && !hasCar(p, state.car)) return false;
     if (withFilters && state.model && !hasModel(p, state.car, state.model)) return false;
     if (withFilters && state.cond && condOf(p) !== state.cond) return false;
@@ -238,7 +248,7 @@ function filtered(withFilters = true) {
     ? p => p.order ? (JP_FIRST.indexOf(p.car) + 1 || JP_FIRST.length + 1) : JP_FIRST.length + 2
     : () => 0;
   // Без поиска — витрина (в рамках своё правило выше)
-  const pretty = !terms.length && state.category !== "Рамки и крепления" ? showcase(list) : new Map();
+  const pretty = terms.length || state.category === "Рамки и крепления" ? new Map() : state.category === "Android-магнитолы" ? androidOrder(list) : showcase(list);
   const pr = p => pretty.get(p) ?? Infinity;
   return list.map((p, i) => [p, i, score(p), rank(p), pr(p)])
     .sort((a, b) => b[2] - a[2] || a[3] - b[3] || (a[4] === b[4] ? 0 : a[4] < b[4] ? -1 : 1) || a[1] - b[1]).map(x => x[0]);
@@ -275,11 +285,11 @@ const moreCard = `
 
 function render() {
   catTabs.innerHTML = ["", ...CATEGORIES].map(c => {
-    const n = ITEMS.filter(p => !c || p.category === c).length;
+    const n = ITEMS.filter(p => !c || inCategory(p, c)).length;
     return `<button class="tab${state.category === c ? " is-active" : ""}" data-cat="${escapeHtml(c)}">${c ? escapeHtml(c) : "Всё"} <small>${n}</small></button>`;
   }).join("");
   // Марки и состояние — только те, что есть в выбранном разделе (у сигнализаций марок нет — строка прячется)
-  const inCat = ITEMS.filter(p => !state.category || p.category === state.category);
+  const inCat = ITEMS.filter(p => !state.category || inCategory(p, state.category));
   const cars = CARS.filter(c => inCat.some(p => hasCar(p, c)));
   if (state.car && !cars.includes(state.car)) { state.car = ""; state.model = ""; }
   carChips.hidden = !cars.length;
