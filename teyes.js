@@ -6,7 +6,7 @@ const TEYES = [
   "category": "TEYES под заказ",
   "name": "TEYES CC2L Plus",
   "image": "images/teyes/image9.jpg",
-  "price": 13900,
+  "price": 12400,
   "priceFrom": false,
   "condition": "Новая",
   "warranty": true,
@@ -16,11 +16,11 @@ const TEYES = [
   "variants": [
    {
     "name": "9″ · 2/32 ГБ",
-    "price": 13900
+    "price": 12400
    },
    {
     "name": "10″ · 2/32 ГБ",
-    "price": 13900
+    "price": 12400
    }
   ]
  },
@@ -29,7 +29,7 @@ const TEYES = [
   "category": "TEYES под заказ",
   "name": "TEYES CC3L Wi-Fi",
   "image": "images/teyes/image1.jpg",
-  "price": 12000,
+  "price": 10500,
   "priceFrom": true,
   "condition": "Новая",
   "warranty": true,
@@ -39,19 +39,19 @@ const TEYES = [
   "variants": [
    {
     "name": "9″ · 2/32 ГБ",
-    "price": 12000
+    "price": 10500
    },
    {
     "name": "10″ · 2/32 ГБ",
-    "price": 12000
+    "price": 10500
    },
    {
     "name": "9″ · 2/64 ГБ",
-    "price": 12500
+    "price": 11000
    },
    {
     "name": "10″ · 2/64 ГБ",
-    "price": 12500
+    "price": 11000
    }
   ]
  },
@@ -87,7 +87,7 @@ const TEYES = [
   "category": "TEYES под заказ",
   "name": "TEYES SPRO 4G",
   "image": "images/teyes/image11.jpg",
-  "price": 17500,
+  "price": 19500,
   "priceFrom": true,
   "condition": "Новая",
   "warranty": true,
@@ -97,27 +97,27 @@ const TEYES = [
   "variants": [
    {
     "name": "9″ · 4/32 ГБ",
-    "price": 17500
+    "price": 19500
    },
    {
     "name": "10″ · 4/32 ГБ",
-    "price": 17500
+    "price": 19500
    },
    {
     "name": "9″ · 4/64 ГБ",
-    "price": 20200
+    "price": 22200
    },
    {
     "name": "10″ · 4/64 ГБ",
-    "price": 20200
+    "price": 22200
    },
    {
     "name": "9″ · 6/128 ГБ",
-    "price": 23200
+    "price": 25200
    },
    {
     "name": "10″ · 6/128 ГБ",
-    "price": 23200
+    "price": 25200
    }
   ]
  },
@@ -324,7 +324,7 @@ const TEYES = [
   "category": "TEYES под заказ",
   "name": "TEYES универсальная 2DIN 7″",
   "image": "images/teyes/image12.jpg",
-  "price": 13000,
+  "price": 11500,
   "priceFrom": true,
   "condition": "Новая",
   "warranty": true,
@@ -334,15 +334,15 @@ const TEYES = [
   "variants": [
    {
     "name": "CC2L · 1/32 ГБ · 3G",
-    "price": 13000
+    "price": 11500
    },
    {
     "name": "CC3L Wi-Fi · 2/64 ГБ · 3G",
-    "price": 13100
+    "price": 11600
    },
    {
     "name": "CC3L Wi-Fi · 2/32 ГБ · 3G",
-    "price": 13900
+    "price": 12400
    },
    {
     "name": "CC3L · 4/32 ГБ · 4G",
@@ -362,7 +362,7 @@ const TEYES = [
    },
    {
     "name": "CC4 · 6/64 ГБ · 4G",
-    "price": 29600
+    "price": 31600
    }
   ]
  },
@@ -475,7 +475,7 @@ const TEYES = [
   "category": "TEYES под заказ",
   "name": "TEYES LUX ONE 12,3″",
   "image": "images/teyes/image18.jpg",
-  "price": 24700,
+  "price": 26700,
   "priceFrom": true,
   "condition": "Новая",
   "warranty": true,
@@ -485,19 +485,19 @@ const TEYES = [
   "variants": [
    {
     "name": "4/32 ГБ",
-    "price": 24700
+    "price": 26700
    },
    {
     "name": "4/64 ГБ",
-    "price": 27700
+    "price": 29700
    },
    {
     "name": "6/128 ГБ",
-    "price": 29200
+    "price": 31200
    },
    {
     "name": "6/128 ГБ + камеры 360°",
-    "price": 35900
+    "price": 37900
    }
   ]
  },
@@ -520,7 +520,7 @@ const TEYES = [
    },
    {
     "name": "CC4 PRO",
-    "price": 42100
+    "price": 44100
    }
   ]
  },
@@ -552,7 +552,7 @@ const TEYES = [
   "category": "TEYES под заказ",
   "name": "TEYES CC4",
   "image": "images/teyes/image1.jpg",
-  "price": 28500,
+  "price": 30500,
   "priceFrom": true,
   "condition": "Новая",
   "warranty": true,
@@ -562,11 +562,11 @@ const TEYES = [
   "variants": [
    {
     "name": "6/64 ГБ",
-    "price": 28500
+    "price": 30500
    },
    {
     "name": "8/128 ГБ",
-    "price": 33100
+    "price": 35100
    }
   ]
  },
@@ -575,7 +575,7 @@ const TEYES = [
   "category": "TEYES под заказ",
   "name": "TEYES CC4 PRO",
   "image": "images/teyes/image1.jpg",
-  "price": 38900,
+  "price": 40900,
   "priceFrom": true,
   "condition": "Новая",
   "warranty": true,
@@ -585,27 +585,27 @@ const TEYES = [
   "variants": [
    {
     "name": "9″ · 8/128 ГБ",
-    "price": 38900
+    "price": 40900
    },
    {
     "name": "11″ · 8/128 ГБ",
-    "price": 39400
+    "price": 41400
    },
    {
     "name": "13″ · 8/128 ГБ",
-    "price": 42400
+    "price": 44400
    },
    {
     "name": "10″ · 12/256 ГБ",
-    "price": 46200
+    "price": 48200
    },
    {
     "name": "11″ · 12/256 ГБ",
-    "price": 49900
+    "price": 51900
    },
    {
     "name": "13″ · 12/256 ГБ",
-    "price": 52900
+    "price": 54900
    }
   ]
  },
@@ -614,7 +614,7 @@ const TEYES = [
   "category": "TEYES под заказ",
   "name": "TEYES CC4 LUX ONE 12,3″",
   "image": "images/teyes/image18.jpg",
-  "price": 29200,
+  "price": 31200,
   "priceFrom": true,
   "condition": "Новая",
   "warranty": true,
@@ -624,15 +624,15 @@ const TEYES = [
   "variants": [
    {
     "name": "6/64 ГБ",
-    "price": 29200
+    "price": 31200
    },
    {
     "name": "8/128 ГБ",
-    "price": 34100
+    "price": 36100
    },
    {
     "name": "12/256 ГБ",
-    "price": 48700
+    "price": 50700
    }
   ]
  },

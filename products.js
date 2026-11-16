@@ -18,7 +18,7 @@ const PRODUCTS = [
     images: ["images/fp/52115064.jpg", "images/fp/52115064-2.jpg", "images/fp/52115064-3.jpg", "images/fp/52115064-4.jpg", "images/fp/52115064-5.jpg", "images/fp/52115064-6.jpg", "images/fp/52115064-7.jpg", "images/fp/52115064-8.jpg", "images/fp/52115064-9.jpg", "images/fp/52115064-10.jpg", "images/fp/52115064-11.jpg", "images/fp/52115064-12.jpg"],
     car: "Toyota",
     farpost: "https://www.farpost.ru/nakhodka/auto/audio/radio/avtomagnitola-toyota-android-4-128-novaja-garantija-52115064.html",
-    price: 8000, priceFrom: true,
+    price: 9000, priceFrom: true,
     condition: "Новая", warranty: true,
     specs: [
       ["Память", "4 ГБ / 128 ГБ"],
