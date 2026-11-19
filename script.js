@@ -130,6 +130,21 @@ function initGallery(root) {
   });
 }
 
+// В раздел Android входят и магнитолы Car Heaven. У TEYES свой раздел.
+const isChHead = p => p.category === "Car Heaven под заказ" && !/^Камера/.test(p.name);
+const inCategory = (p, c) => p.category === c || (c === "Android-магнитолы" && isChHead(p));
+
+function directionText(d) {
+  const android = d.filter === "Android-магнитолы";
+  const teyes = d.filter === "TEYES под заказ";
+  if (!android && !teyes) return d.text;
+  // У магнитол TEYES есть памятка о памяти. Камеры и другие аксессуары не участвуют в расчёте.
+  const prices = ITEMS.filter(p => inCategory(p, d.filter) && p.price > 0 && (!teyes || p.memo)).map(p => p.price);
+  if (!prices.length) return d.text;
+  const price = Math.min(...prices).toLocaleString("ru-RU") + " ₽";
+  return android ? `${d.text}, от ${price}` : `От ${price}. ${d.text}`;
+}
+
 // Плитки направлений — открывают нужный раздел каталога
 const catalogEl = document.getElementById("catalog");
 const directions = document.getElementById("directions");
@@ -138,7 +153,7 @@ directions.innerHTML = DIRECTIONS.map(d => `
     <img src="${escapeHtml(d.image)}" alt="" loading="lazy">
     <span class="direction__body">
       <span class="direction__title">${escapeHtml(d.title)}</span>
-      <span class="direction__text">${escapeHtml(d.text)}</span>
+      <span class="direction__text">${escapeHtml(directionText(d))}</span>
     </span>
   </a>`).join("");
 directions.addEventListener("click", e => {
@@ -217,8 +232,6 @@ const inYears = (p, w) => /^(19|20)\d\d$/.test(w) && yearRanges(p).some(([a, b])
 
 // В «Android-магнитолах» — все Android, кроме TEYES (у них своя плашка): папины в наличии + Car Heaven под заказ (без камеры),
 // сначала с фото, от дешёвых к дорогим (папа, 15.11.2026: «чаще берут дешёвые, типа T100»)
-const isChHead = p => p.category === "Car Heaven под заказ" && !/^Камера/.test(p.name); // всё Android от Car Heaven, кроме камеры
-const inCategory = (p, c) => p.category === c || (c === "Android-магнитолы" && isChHead(p));
 function androidOrder(list) {
   const byPrice = (a, b) => (a.price || 1e9) - (b.price || 1e9);
   const out = [...list.filter(p => p.image).sort(byPrice), ...list.filter(p => !p.image).sort(byPrice)];
@@ -445,6 +458,7 @@ function openProduct(id) {
 const KIT_CATS = ["Android-магнитолы", "TEYES под заказ", "Car Heaven под заказ"];
 const INSTALL_FROM = 1000; // как в разделе «Услуги»
 const FRAMES = ITEMS.filter(p => p.category === "Рамки и крепления");
+const isFrame = p => /^Рамка(?:\s|-|$)/i.test(p.name);
 const WIRES = ITEMS.filter(p => p.category === "Провода и аксессуары" && /провод/i.test(p.name));
 const KIT_CARS = CARS.filter(c => FRAMES.some(p => hasCar(p, c)));
 const kit = { car: "", model: "" };
@@ -465,20 +479,23 @@ function kitResult(p) {
   if (!kit.car) return `<p class="kit__hint">Выберите марку и модель — покажем подходящую рамку и провода с ценами.</p>`;
   const list = kitModels();
   if (list.length && !kit.model) return `<p class="kit__hint">Теперь выберите модель ${escapeHtml(kit.car)}.</p>`;
-  const allFrames = FRAMES.filter(f => hasCar(f, kit.car) && (!kit.model || hasModel(f, kit.car, kit.model)));
-  const frames = uniq(allFrames).sort(byPrice);
+  const matching = uniq(FRAMES.filter(f => hasCar(f, kit.car) && (!kit.model || hasModel(f, kit.car, kit.model)))).sort(byPrice);
+  const frames = matching.filter(isFrame);
+  const mounts = matching.filter(p => !isFrame(p));
   const ofCar = WIRES.filter(w => hasCar(w, kit.car));
   const own = kit.model ? ofCar.filter(w => hasModel(w, kit.car, kit.model)) : [];
   const generic = ofCar.filter(w => !w.models.some(k => k.startsWith(kit.car + "|")));
   const wires = uniq([...own.sort(byPrice), ...generic.sort(byPrice)]).slice(0, 3);
-  if (!frames.length) return `<p class="kit__hint">Рамку для этой машины подберём по телефону или в MAX.</p>`;
   const title = kit.car + (kit.model ? " " + kit.model : "");
-  const parts = [p.price, frames[0].price, wires.length ? Math.min(...wires.map(w => w.price)) : 0, INSTALL_FROM];
-  const total = p.price ? parts.reduce((a, b) => a + b, 0) : 0;
+  const pricedFrame = frames.find(f => f.price > 0);
+  const wirePrices = wires.map(w => w.price).filter(price => price > 0);
+  const wirePrice = wirePrices.length ? Math.min(...wirePrices) : 0;
+  const total = p.price && pricedFrame ? p.price + pricedFrame.price + wirePrice + INSTALL_FROM : 0;
   return `
     <h4>Рамка для ${escapeHtml(title)}</h4>
-    ${frames.slice(0, 5).map(kitRow).join("")}
-    ${frames.length > 5 ? `<button type="button" class="kit__all" data-kit-all>Все рамки для ${escapeHtml(title)} (${allFrames.length})</button>` : ""}
+    ${frames.length ? frames.slice(0, 5).map(kitRow).join("") : '<p class="kit__hint">Рамку для этой машины подберём по телефону или в MAX.</p>'}
+    ${mounts.length ? `<h4>Крепления</h4>${mounts.slice(0, 3).map(kitRow).join("")}` : ""}
+    ${frames.length > 5 || mounts.length > 3 ? `<button type="button" class="kit__all" data-kit-all>Все рамки и крепления для ${escapeHtml(title)} (${matching.length})</button>` : ""}
     ${wires.length ? `<h4>Провода</h4>${wires.map(kitRow).join("")}` : ""}
     <div class="kit__item kit__item--static"><span>Установка</span><b>от ${money(INSTALL_FROM)}</b></div>
     ${total ? `<p class="kit__total">Всё вместе — примерно от <b>${money(total)}</b></p>` : ""}

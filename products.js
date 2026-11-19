@@ -28,7 +28,7 @@ const PRODUCTS = [
       ["Воспроизведение", "MP3, DVD, USB, видео и музыка"],
       ["Подключение", "сабвуфер, камера, мультируль, фишки Toyota"],
     ],
-    description: "Новая магнитола под Toyota. Цена от 8 000 до 15 000 ₽ в зависимости от модели. Модели меняются — приезжайте, выбор есть. Возможна установка.",
+    description: "Новая магнитола под Toyota. Цена зависит от модели. Модели меняются — приезжайте, выбор есть. Возможна установка.",
   },
   {
     id: 2,
@@ -53,8 +53,8 @@ const PRODUCTS = [
 
 // Направления — плитки над каталогом. filter — какой раздел каталога открыть.
 const DIRECTIONS = [
-  { title: "Android-магнитолы", text: "Новые, с гарантией, от 8 000 ₽", image: "images/honda.jpg", filter: "Android-магнитолы" },
-  { title: "Магнитолы TEYES под заказ", text: "От 12 000 ₽. Камеры, регистраторы, парктроники", image: "images/teyes/image2.jpg", filter: "TEYES под заказ" },
+  { title: "Android-магнитолы", text: "Новые, с гарантией", image: "images/honda.jpg", filter: "Android-магнитолы" },
+  { title: "Магнитолы TEYES под заказ", text: "Камеры, регистраторы, парктроники", image: "images/teyes/image2.jpg", filter: "TEYES под заказ" },
   { title: "Японские магнитолы", text: "Pioneer, Kenwood, Alpine, Toyota, Clarion и другие", image: "images/tile-japan.jpg", filter: "Японские магнитолы" },
   { title: "Сигнализации Pandora", text: "Есть и другие сигнализации в наличии. Возможна установка", image: "images/fp/64527981.jpg", filter: "Сигнализации Pandora" },
   { title: "Рамки, крепления, провода", text: "Для 40+ марок машин — в наличии и под заказ", image: "images/tile-frames.jpg", filter: "Рамки и крепления" },
