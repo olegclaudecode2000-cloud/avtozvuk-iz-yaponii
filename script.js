@@ -491,6 +491,17 @@ function kitResult(p) {
   const wirePrices = wires.map(w => w.price).filter(price => price > 0);
   const wirePrice = wirePrices.length ? Math.min(...wirePrices) : 0;
   const total = p.price && pricedFrame ? p.price + pricedFrame.price + wirePrice + INSTALL_FROM : 0;
+  const wire = wires.find(w => w.price === wirePrice && wirePrice > 0);
+  const request = [
+    `Здравствуйте! Хочу уточнить комплект для ${title}.`,
+    `Магнитола: ${p.name} — ${priceText(p)}.`,
+    pricedFrame ? `Рамка из расчёта: ${pricedFrame.name} — ${priceText(pricedFrame)}.` : "Помогите подобрать рамку.",
+    wire ? `Провода из расчёта: ${wire.name} — ${priceText(wire)}.` : "Стоимость проводов нужно уточнить.",
+    `Установка от ${money(INSTALL_FROM)}.`,
+    total ? `Предварительный итог: от ${money(total)}${wire ? "" : " без проводов"}.` : "",
+    "Подойдёт ли этот комплект? Могу приложить фото панели.",
+    "Год машины: ",
+  ].filter(Boolean).join("\n");
   return `
     <h4>Рамка для ${escapeHtml(title)}</h4>
     ${frames.length ? frames.slice(0, 5).map(kitRow).join("") : '<p class="kit__hint">Рамку для этой машины подберём по телефону или в MAX.</p>'}
@@ -498,7 +509,8 @@ function kitResult(p) {
     ${frames.length > 5 || mounts.length > 3 ? `<button type="button" class="kit__all" data-kit-all>Все рамки и крепления для ${escapeHtml(title)} (${matching.length})</button>` : ""}
     ${wires.length ? `<h4>Провода</h4>${wires.map(kitRow).join("")}` : ""}
     <div class="kit__item kit__item--static"><span>Установка</span><b>от ${money(INSTALL_FROM)}</b></div>
-    ${total ? `<p class="kit__total">Всё вместе — примерно от <b>${money(total)}</b></p>` : ""}
+    ${total ? `<p class="kit__total">${wire ? "Всё вместе" : "Без проводов"} — примерно от <b>${money(total)}</b></p>` : ""}
+    ${MAX_LINK ? `<button type="button" class="btn btn--max btn--wide" data-kit-max="${escapeHtml(request)}">Уточнить комплект в MAX</button><p class="kit__hint" data-kit-tip role="status"></p>` : ""}
     <p class="kit__hint">Рамка и провода зависят от года и комплектации. Назовите машину — подтвердим точно. Рамки и провода — под заказ.</p>`;
 }
 function kitBlock(p) {
@@ -561,6 +573,15 @@ const linkKey = p => p.key || (p.farpost && (p.farpost.match(/-(\d+)\.html/) || 
 const shareTip = text => { const t = document.getElementById("shareTip"); t.textContent = text; t.hidden = false; };
 // «Написать в MAX» из окна товара: сразу с названием, ценой и ссылкой — папе не надо переспрашивать (П9)
 modalBody.addEventListener("click", async e => {
+  const kitButton = e.target.closest("[data-kit-max]");
+  if (kitButton) {
+    const tip = kitButton.parentElement.querySelector("[data-kit-tip]");
+    const message = kitButton.dataset.kitMax;
+    tip.textContent = await openMaxWith(message)
+      ? "Вставьте скопированный текст в чат MAX, добавьте год машины и фото панели."
+      : "Скопируйте сообщение в MAX: " + message;
+    return;
+  }
   const b = e.target.closest("[data-ask-max]");
   if (!b) return;
   const p = ITEMS.find(x => x.id === Number(b.dataset.askMax));
