@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://avtozvuk-iz-yaponii.ru/sitemap.xml
